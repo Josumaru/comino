@@ -5,8 +5,10 @@
 
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
+const gradientColor = ['transparent', 'rgba(0,0,0,0.8)', 'rgba(0,0,0,1)']
 
 export const Colors = {
+  gradientColor,
   light: {
     text: '#11181C',
     background: '#fff',

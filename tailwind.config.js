@@ -19,6 +19,17 @@ module.exports = {
           900: "#881337",
           950: "#4c0519",
         }
+      },
+      fontFamily: {
+        black: ["Lexend-Black"],
+        bold: ["Lexend-Bold"],
+        extrabold: ["Lexend-ExtraBold"],
+        extralight: ["Lexend-ExtraLight"],
+        light: ["Lexend-Light"],
+        medium: ["Lexend-Medium"],
+        regular: ["Lexend-Regular"],
+        semibold: ["Lexend-SemiBold"],
+        thin: ["Lexend-Thin"],
       }
     },
   },

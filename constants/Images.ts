@@ -2,10 +2,10 @@
 //  * Below are the images that are used in the app.
 //  */
 
-// import homeIcon from "@/assets/images/";
+import onboardingBackgroundImage from "@/assets/images/bg-onboarding.png";
 
-// const Icons = {
-//     homeIcon,
-// }
+const Images = {
+    onboardingBackgroundImage,
+}
 
-// export default Icons;
+export default Images;
