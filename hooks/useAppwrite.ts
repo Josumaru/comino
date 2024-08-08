@@ -1,4 +1,4 @@
-import { signInWithPassword } from "@/lib/supabase";
+import { signInWithPassword } from "@/lib/supabase/supabase";
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
 

@@ -2,8 +2,11 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { Provider } from "react-redux";
+import { store } from "@/lib/redux/store";
 
 import "../global.css";
+import { NativeStackNavigationOptions } from "react-native-screens/lib/typescript/native-stack/types";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -31,12 +34,13 @@ export default function RootLayout() {
     return null;
   }
 
-  const screen = ["index", "(tabs)", "+not-found"];
-  const option = { headerShown: false };
+  const screen = ["index", "(auth)", "(tabs)", "+not-found"];
 
   return (
+    <Provider store={store}>
       <Stack>
-        {screen.map((screenName) => <Stack.Screen key={screenName} name={screenName} options={option}/>)}
+        {screen.map((screenName) => <Stack.Screen key={screenName} name={screenName} options={{ headerShown: false , animation: "ios"}}/>)}
       </Stack>
+    </Provider>
   );
 }

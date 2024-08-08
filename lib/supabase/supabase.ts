@@ -78,9 +78,7 @@ const signUpWithPassword = async ({email, password}: SignInParams) => {
   const { data, error } = await supabase.auth.signUp({
     email: email,
     password: password,
-    options: {
-      emailRedirectTo: "https://example.com/welcome",
-    },
+
   });
   return { data, error };
 };
