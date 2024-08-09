@@ -1,4 +1,4 @@
-import { SignInComponent } from '@/components/auth/sign-in/SignIn';
+import SignInComponent  from '@/components/auth/sign-in/SignIn';
 import React from 'react'
 
 export function SignIn() {

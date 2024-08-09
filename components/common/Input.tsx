@@ -1,35 +1,76 @@
-import React, { useState } from "react";
-import { TextInput, Image, View, Text, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { TextInput, Image, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, useColorScheme } from "react-native";
+import Images from "@/constants/Images";
+import { BlurView } from "expo-blur";
 
 type Props = {
   title?: string;
   value?: string;
-  placeholder?: string;
   onChange?: (text: string) => void;
   className?: string;
+  image? : ImageSourcePropType;
 };
 
 const Input = (props: Props) => {
-  const [showPassword, setShowPassword] = useState(false);
+  const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const [color, setColor] = useState("white")
+  const theme = useColorScheme();
+
+  useEffect(() => {
+    if (theme == "dark") {
+      setColor("white");
+    } else {
+      setColor("#060119");
+    }
+  })
+
   return (
     <View className={`space-y-2 w-full ${props.className}`}>
-      <Text className="text-base font-regular">{props.title}</Text>
-      <View className="w-full h-16 bg-white border-2 border-gray-200 px-4 rounded-2xl focus:border-primary-500  items-center flex-row ">
+      <BlurView intensity={50} experimentalBlurMethod='dimezisBlurView' style={[styles.inputContainer, isFocused && styles.inputFocused]} className="bg-opacity-20">
+        <Image source={props.image} style={{ width: 24, height: 24 }} tintColor={color}/>
         <TextInput
+          className="text-black dark:text-white"
           value={props.value}
-          placeholder={props.placeholder}
+          placeholder={props.title}
           onChangeText={props.onChange}
-          secureTextEntry={props.title === "Password" && !showPassword}
-          className="flex-1 w-full text-base font-medium"
+          secureTextEntry={props.title === "Password" && !isShowPassword}
+          style={styles.input}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
         />
         {props.title === "Password" && (
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text>Hide</Text>
+          <TouchableOpacity onPress={() => setIsShowPassword(!isShowPassword)}>
+            <Image source={isShowPassword ? Images.eyeIcon : Images.eyeSlashedIcon} style={{ width: 24, height: 24 }}  tintColor={color} />
           </TouchableOpacity>
         )}
-      </View>
+      </BlurView>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    height: 64,
+    borderWidth: 2,
+    overflow: "hidden",
+    borderColor: "#24253c",
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  inputFocused: {
+    borderWidth: 2,
+    borderColor: "#03d383",
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    paddingHorizontal:10,
+    paddingVertical: 16,
+    fontWeight: "500",
+  },
+});
 
 export default Input;

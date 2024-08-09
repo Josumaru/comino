@@ -8,8 +8,6 @@ export const deviceLanguage = getLocales()?.[0].languageCode ?? "en";
 
 export const i18n = new I18n({
   en,
-  id,
-  jp,
 });
 
 // When a value is missing from a language it'll fall back to another language with the key present.

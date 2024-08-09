@@ -4,6 +4,7 @@ import PagerView from "react-native-pager-view";
 import { Texts } from "@/constants/Texts";
 import Button from "./common/Button";
 import { router } from "expo-router";
+import { useColorScheme } from "react-native";
 
 interface PageSelectedEvent {
     position: number;
@@ -12,6 +13,7 @@ interface PageSelectedEvent {
 function OnboardingPagerView() {
   const [position, setPosition] = useState(0)
   const pagerRef = useRef<PagerView>(null);
+  const theme = useColorScheme();
 
   const handleSelected = (e: NativeSyntheticEvent<PageSelectedEvent>) => {
     setPosition(e.nativeEvent.position);
@@ -54,7 +56,7 @@ function OnboardingPagerView() {
       </View>
       <View className="flex flex-row w-full mt-2 p-5">
           <Button title={position === 2 ? Texts.getStarted : Texts.next} className="flex-1 rounded-full" onClick={handleNextClick}/>
-          <Button title={Texts.skip} className="flex-1 bg-transparent border-0" textStyle="text-black dark:text-white" onClick={handleClick}/>
+          <Button title={Texts.skip} className="flex-1 bg-transparent border-0" textStyle="text-black dark:text-white" onClick={handleClick} textColor={theme === "dark" ? "white" : "black"}/>
       </View>
     </View>
   );

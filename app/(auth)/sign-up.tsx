@@ -1,12 +1,6 @@
-import { View, Text } from 'react-native'
 import React from 'react'
+import SignUpComponent from '@/components/auth/sign-up/SignUp'
 
-const SignUp = () => {
-  return (
-    <View>
-      <Text>SignUp</Text>
-    </View>
-  )
-}
+const SignUp = () => <SignUpComponent />
 
 export default SignUp
