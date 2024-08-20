@@ -1,26 +1,28 @@
-import Images from "@/constants/Images";
+import BackgroundConstants from "@/constants/images/BackgroundConstants";
 import OnboardingPagerView from "@/components/OnboardingPagerView";
 import { View, ImageBackground, useColorScheme } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Colors } from "@/constants/Colors";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
+import { Redirect } from "expo-router";
+import ColorConstants from "@/constants/images/ColorConstants";
 
 const Onboarding = () => {
-    const [color, setColor] = useState<string[]>(Colors.lightGradientColor);
+    const [color, setColor] = useState<string[]>(ColorConstants.lightGradientColor);
     const theme = useColorScheme();
   
     useEffect(() => {
       if(theme == "dark"){
-        setColor(Colors.darkGradientColor)
+        setColor(ColorConstants.darkGradientColor)
       } else {
-        setColor(Colors.lightGradientColor)
+        setColor(ColorConstants.lightGradientColor)
       }
     }, [theme])
+    return <Redirect href={"/home"}/>
   
     return (
       <View className="flex-1 bg-white dark:bg-[#060119]">
-        <ImageBackground source={Images.onboardingBackgroundImage} resizeMode="cover" className="flex-1 justify-end">
+        <ImageBackground source={BackgroundConstants.onboardingBackgroundImage} resizeMode="cover" className="flex-1 justify-end">
           <LinearGradient colors={color} className="h-2/3 flex justify-end">
             <OnboardingPagerView />
           </LinearGradient>

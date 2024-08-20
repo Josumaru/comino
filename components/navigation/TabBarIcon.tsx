@@ -1,9 +1,26 @@
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
+import { View, Text, Image, ImageSourcePropType } from "react-native";
+import React from "react";
 
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { type IconProps } from '@expo/vector-icons/build/createIconSet';
-import { type ComponentProps } from 'react';
+type Props = {
+  image: ImageSourcePropType;
+  color: string;
+  title: string;
+  focused: boolean;
+};
+const TabBarIcon = (props: Props) => {
+  return (
+    <View className="items-center justify-center gap-2">
+      <Image
+        source={props.image}
+        resizeMode="contain"
+        tintColor={props.color}
+        className="w-6 h-6"
+      />
+      <Text className={`${props.focused ? "font-semibold" : "font-regular"} text-xs`}style={{ color: props.color }}>
+        {props.title}
+      </Text>
+    </View>
+  );
+};
 
-export function TabBarIcon({ style, ...rest }: IconProps<ComponentProps<typeof Ionicons>['name']>) {
-  return <Ionicons size={28} style={[{ marginBottom: -3 }, style]} {...rest} />;
-}
+export default TabBarIcon;

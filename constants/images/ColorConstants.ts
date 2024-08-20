@@ -4,8 +4,14 @@
 
 const lightGradientColor = ['rgba(255,255,255,0)', 'rgba(255,255,255,0.8)', 'rgba(255,255,255,1)'];
 const darkGradientColor = ['rgba(0,0,0,0)', 'rgba(0,0,0,0.8)', 'rgba(0,0,0,1)'];
+const light = {}
+const dark = {}
 
-export const Colors = {
+const ColorConstants = {
   darkGradientColor,
   lightGradientColor,
+  light,
+  dark
 };
+
+export default ColorConstants;

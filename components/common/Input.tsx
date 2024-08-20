@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { TextInput, Image, StyleSheet, View, Text, TouchableOpacity, ImageSourcePropType, useColorScheme } from "react-native";
-import Images from "@/constants/Images";
+import { TextInput, Image, StyleSheet, View, TouchableOpacity, ImageSourcePropType, useColorScheme } from "react-native";
 import { BlurView } from "expo-blur";
+import IconConstants from "@/constants/images/IconConstants";
 
 type Props = {
   title?: string;
@@ -41,7 +41,7 @@ const Input = (props: Props) => {
         />
         {props.title === "Password" && (
           <TouchableOpacity onPress={() => setIsShowPassword(!isShowPassword)}>
-            <Image source={isShowPassword ? Images.eyeIcon : Images.eyeSlashedIcon} style={{ width: 24, height: 24 }}  tintColor={color} />
+            <Image source={isShowPassword ? IconConstants.eye : IconConstants.eyeSlashed} style={{ width: 24, height: 24 }}  tintColor={color} />
           </TouchableOpacity>
         )}
       </BlurView>
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     height: 64,
     borderWidth: 2,
     overflow: "hidden",
-    borderColor: "#24253c",
+    borderColor: "transparent",
     paddingHorizontal: 16,
     borderRadius: 12,
     flexDirection: "row",

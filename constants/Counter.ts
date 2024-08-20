@@ -1,7 +1,9 @@
 const INCREMENT = "INCREMENT";
 const DECREMENT = "DECREMENT";
 
-export const CounterConstants = {
+const CounterConstants = {
     INCREMENT,
     DECREMENT,
 }
+
+export default CounterConstants;

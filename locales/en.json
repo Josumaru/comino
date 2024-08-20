@@ -27,5 +27,9 @@
     "rememberMe": "Remember Me",
     "forgotPasswordText": "Forgot your password? Enter your email address and we'll send you a reset link.",
     "username": "Username",
-    "loading": "Loading"
+    "loading": "Loading",
+    "home": "Home",
+    "discover": "Discover",
+    "profile": "Profile",
+    "latestUpdate": "Latest Updates"
 }

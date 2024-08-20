@@ -1,10 +1,10 @@
 import React, { useRef, useState } from "react";
 import { View, Text, NativeSyntheticEvent } from "react-native";
 import PagerView from "react-native-pager-view";
-import { Texts } from "@/constants/Texts";
 import Button from "./common/Button";
 import { router } from "expo-router";
 import { useColorScheme } from "react-native";
+import Texts from "@/constants/strings/TextConstants";
 
 interface PageSelectedEvent {
     position: number;
@@ -41,17 +41,15 @@ function OnboardingPagerView() {
   return (
     <View className="flex-auto">
       <PagerView initialPage={0} className="flex-1" style={{ flex: 1 }} onPageSelected={handleSelected} ref={pagerRef}>
-        {
-            pages.map((page, index) => <View className="w-full justify-end px-5" key={index}>
-                    <Text className="text-4xl dark:text-white font-regular">{page.title}</Text>
-                    <Text className="text-base dark:text-gray-300 font-light">{page.description}</Text>
-                </View>
-            )
-        }
+        {pages.map((page, index) => <View className="w-full justify-end px-5" key={index}>
+            <Text className="text-4xl dark:text-white font-regular">{page.title}</Text>
+            <Text className="text-base dark:text-gray-300 font-light">{page.description}</Text>
+          </View>
+        )}
       </PagerView>
       <View className="flex-row my-4 px-5">
         {
-            pages.map((_, index)=> <View className="bg-black dark:bg-white ml-1 rounded-lg w-1 h-1 ease-in-out duration-300" style={{width: index === position ? 12 : 4}} key={index}/>)
+          pages.map((_, index)=> <View className="bg-black dark:bg-white ml-1 rounded-lg w-1 h-1 ease-in-out duration-300" style={{width: index === position ? 12 : 4}} key={index}/>)
         }
       </View>
       <View className="flex flex-row w-full mt-2 p-5">

@@ -4,6 +4,8 @@
 
 const SET_USER = "SET_USER";
 
-export const CounterConstants = {
+const CounterConstants = {
     SET_USER,
 };
+
+export default CounterConstants;

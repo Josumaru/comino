@@ -4,7 +4,7 @@
 
 import { i18n } from "@/lib/i18n/i18n";
 
-export const Texts = {
+export const TextConstants = {
     onboardingTitle1: i18n.t("onboardingTitle1"),
     onboardingTitle2: i18n.t("onboardingTitle2"),
     onboardingTitle3: i18n.t("onboardingTitle3"),
@@ -35,4 +35,7 @@ export const Texts = {
     username: i18n.t("username"),
     signUpTo: i18n.t("signUpTo"),
     loading: i18n.t("loading"),
+    latestUpdate: i18n.t("latestUpdate"),
 }
+
+export default TextConstants;

@@ -1,28 +1,49 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import React from "react";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
-
+import TabBarIcon from "@/components/navigation/TabBarIcon";
+import IconsConstants from "@/constants/images/IconConstants";
+import TabConstants from "@/constants/strings/Tabs";
+import TabScreenOptionConstants from "@/constants/TabScreens";
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const tabs = [
+    {
+      name: TabConstants.home,
+      icon: IconsConstants.home,
+    },
+    {
+      name: TabConstants.discover,
+      icon: IconsConstants.discover,
+    },
+    {
+      name: TabConstants.profile,
+      icon: IconsConstants.profile,
+    },
+  ];
 
   return (
     <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
+      screenOptions={TabScreenOptionConstants}
+    >
+      {tabs.map((tab, index) => (
+        <Tabs.Screen
+          key={index}
+          name={tab.name.toLocaleLowerCase()}
+          options={{
+            title: tab.name,
+            headerShown: false,
+
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon
+                image={tab.icon}
+                color={color}
+                focused={focused}
+                title={tab.name}
+              />
+            ),
+          }}
+        />
+      ))}
     </Tabs>
   );
 }
