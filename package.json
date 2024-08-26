@@ -17,6 +17,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@hookform/resolvers": "^3.9.0",
+    "@likashefqet/react-native-image-zoom": "^4.1.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^6.0.2",
     "@reduxjs/toolkit": "^2.2.7",
@@ -40,6 +41,7 @@
     "expo-web-browser": "~13.0.3",
     "i18n-js": "^4.4.3",
     "mangadex-full-api": "6.0.0",
+    "moti": "^0.29.0",
     "nativewind": "^4.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",

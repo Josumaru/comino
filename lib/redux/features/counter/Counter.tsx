@@ -4,7 +4,7 @@ import { useAppSelector, useAppDispatch } from "@/lib/redux/hooks";
 
 import { decrement, increment } from "./counterSlice";
 import { View, Text } from "react-native";
-import Button from "@/components/Button";
+import Button from "@/components/common/Button";
 
 export function Counter() {
   // The `state` arg is correctly typed as `RootState` already

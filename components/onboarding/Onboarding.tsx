@@ -1,5 +1,5 @@
 import BackgroundConstants from "@/constants/images/BackgroundConstants";
-import OnboardingPagerView from "@/components/OnboardingPagerView";
+import OnboardingPagerView from "@/components/onboarding/OnboardingPagerView";
 import { View, ImageBackground, useColorScheme } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";

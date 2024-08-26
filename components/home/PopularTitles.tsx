@@ -1,14 +1,28 @@
 import { getPopular } from "@/lib/mangadex/mangadex";
 import { Manga } from "mangadex-full-api";
-import { Image, Text, View } from "react-native";
-import { useEffect, useState } from "react";
+import {
+  Image,
+  NativeSyntheticEvent,
+  Text,
+  View,
+  TouchableOpacity,
+} from "react-native";
+import { useEffect, useRef, useState } from "react";
 import PagerView from "react-native-pager-view";
+import { useRouter } from "expo-router";
+import ColoredTitle from "../common/ColoredTitle";
 
-const PopularTitles = () => {
+interface PopularTitlesProps {
+  onChange: (cover: string) => void;
+}
+
+const PopularTitles = ({ onChange }: PopularTitlesProps) => {
   const [mangaList, setMangaList] = useState<Manga[]>([]);
   const [mangaCover, setMangaCover] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const router = useRouter();
+  const pagerRef = useRef<PagerView>(null);
 
   const fetchManga = async () => {
     setIsLoading(true);
@@ -27,31 +41,52 @@ const PopularTitles = () => {
     fetchManga();
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (pagerRef.current) {
+        const nextPage = currentPage + 1 < 10 ? currentPage + 1 : 0;
+        pagerRef.current.setPage(nextPage);
+        setCurrentPage(nextPage);
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [currentPage]);
+
+  const onPageSelected = (
+    e: NativeSyntheticEvent<Readonly<{ position: number }>>
+  ) => {
+    setCurrentPage(e.nativeEvent.position);
+    onChange(mangaCover[e.nativeEvent.position]);
+  };
+
   return (
     <View className="">
-      <Text className="text-black dark:text-white z-20 mt-2 mx-5 font-semibold text-2xl">
-        Popular Titles
-      </Text>
-
-      {!isLoading && (
-        <Image
-          src={mangaCover[currentPage]}
-          className="absolute z-0 ease-in-out delay-500 w-full h-72 opacity-30"
-          blurRadius={100}
-        />
-      )}
-
+      <View className="mx-5">
+        <ColoredTitle firstText="Popular" secondText="Titles" type="firstPrimary"/>
+      </View>
       <PagerView
+        ref={pagerRef}
         initialPage={0}
         style={{ height: 200 }}
         className="relative"
-        onPageSelected={(e) => setCurrentPage(e.nativeEvent.position)}
+        onPageSelected={onPageSelected}
       >
         {mangaList.map((manga, index) => (
-          <View key={index} className="m-5 flex flex-row gap-5">
+          <TouchableOpacity
+            key={index}
+            className="mx-5 flex flex-row gap-5"
+            onPress={() =>
+              router.push({
+                pathname: "/detail/[id]",
+                params: { id: manga.id },
+              })
+            }
+            activeOpacity={0.8}
+          >
             <Image
               src={mangaCover[index]}
-              className="rounded-lg z-20 w-32 h-48"
+              className="rounded-lg z-20 w-32 h-48 bg-[#FFFFFF50]"
             />
             <View className="flex-1">
               <Text className="text-2xl font-regular overflow-hidden text-black dark:text-white text-wrap line-clamp-2">
@@ -61,7 +96,7 @@ const PopularTitles = () => {
                 {manga.tags.slice(0, 3).map((tag, index) => (
                   <View
                     key={index}
-                    className="bg-gray-50 opacity-50 rounded-lg flex-1 items-center justify-center p-1"
+                    className="bg-[#FFFFFF50] opacity-50 rounded-lg flex-1 items-center justify-center p-1"
                   >
                     <Text className="text-black dark:text-white font-regular opacity-100 line-clamp-1 text-wrap overflow-hidden text-xs">
                       {tag.localName}
@@ -73,10 +108,10 @@ const PopularTitles = () => {
                 {manga.description.localString.replaceAll("_", "")}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         ))}
       </PagerView>
-      <View className="px-5 flex-1 w-full justify-between flex-row items-center">
+      {/* <View className="px-5 flex-1 w-full justify-between flex-row items-center">
         <Text className="font-regular text-end text-black dark:text-white">{`${
           ((currentPage + 1) / 10) * 100
         }%`}</Text>
@@ -87,7 +122,7 @@ const PopularTitles = () => {
             style={{ width: `${((currentPage + 1) / 10) * 100}%` }}
           />
         </View>
-      </View>
+      </View> */}
     </View>
   );
 };

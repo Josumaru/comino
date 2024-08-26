@@ -1,17 +1,33 @@
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "@/lib/redux/store";
-
+import React from "react";
+import IconsConstants from "@/constants/images/IconConstants";
+import TabConstants from "@/constants/strings/Tabs";
+import TabBar from "@/components/navigation/TabBar";
 import "../global.css";
-import { NativeStackNavigationOptions } from "react-native-screens/lib/typescript/native-stack/types";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const tabs = [
+    {
+      name: TabConstants.home,
+      icon: IconsConstants.home,
+    },
+    {
+      name: TabConstants.discover,
+      icon: IconsConstants.discover,
+    },
+    {
+      name: TabConstants.profile,
+      icon: IconsConstants.profile,
+    },
+  ];
   const [loaded] = useFonts({
     "Lexend-Black": require("@/assets/fonts/Lexend-Black.ttf"),
     "Lexend-Bold": require("@/assets/fonts/Lexend-Bold.ttf"),
@@ -34,13 +50,35 @@ export default function RootLayout() {
     return null;
   }
 
-  const screen = ["index", "(auth)", "(tabs)", "+not-found"];
-
   return (
     <Provider store={store}>
-      <Stack>
-        {screen.map((screenName) => <Stack.Screen key={screenName} name={screenName} options={{ headerShown: false , animation: "ios"}}/>)}
-      </Stack>
+      <Tabs tabBar={(props) => <TabBar {...props} />}>
+        {tabs.map((tab, index) => (
+          <Tabs.Screen
+            key={index}
+            name={`(tabs)/${tab.name.toLocaleLowerCase()}`}
+            options={{
+              title: tab.name,
+              headerShown: false,
+              tabBarIcon: ({ focused }) => (
+                <tab.icon focused={focused} color={focused ? "red" : "blue"} />
+              ),
+            }}
+          />
+        ))}
+        <Tabs.Screen
+          name={`detail/[id]`}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name={`read/[id]`}
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Tabs>
     </Provider>
   );
 }

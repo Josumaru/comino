@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { View, Text, NativeSyntheticEvent } from "react-native";
 import PagerView from "react-native-pager-view";
-import Button from "./common/Button";
+import Button from "../common/Button";
 import { router } from "expo-router";
 import { useColorScheme } from "react-native";
 import Texts from "@/constants/strings/TextConstants";

@@ -1,10 +1,11 @@
 // app/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from '@/lib/redux/features/counter/counterSlice';
-
+import mangaReducer from "@/lib/redux/features/manga/mangaSlice";
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    manga: mangaReducer,
   },
 });
 
