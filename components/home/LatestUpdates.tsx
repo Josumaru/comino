@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import TextConstants from "@/constants/strings/TextConstants";
 import { Chapter, Manga } from "mangadex-full-api";
-import { getLatestUpdate } from "@/lib/mangadex/mangadex";
+import { getCover, getLatestUpdate } from "@/lib/mangadex/mangadex";
 import { useRouter } from "expo-router";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { addManga, setManga } from "@/lib/redux/features/manga/mangaSlice";
@@ -22,8 +22,9 @@ const LatestUpdate = () => {
     setIsLoading(true);
     const latestUpdate = await getLatestUpdate();
     for (let i = 0; i < latestUpdate.length; i++) {
-      const cover = await latestUpdate[i].getCovers();
-      setMangaCover((prevState) => [...prevState, cover[0].url]);
+      const fileName = await latestUpdate[i].getCovers();
+      const cover = await getCover({id:latestUpdate[i].id, fileName: fileName[0].fileName, size: 256});
+      setMangaCover((prevState) => [...prevState, cover]);
       setMangaList((precState) => [...precState, latestUpdate[i]]);
     }
     setIsLoading(false);

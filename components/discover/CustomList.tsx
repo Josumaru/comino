@@ -1,7 +1,7 @@
 import { View, Text, Image } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Cover, Manga } from "mangadex-full-api";
-import { getCustomList, getManga } from "@/lib/mangadex/mangadex";
+import { Manga } from "mangadex-full-api";
+import { getCover, getCustomList } from "@/lib/mangadex/mangadex";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -25,19 +25,29 @@ const CustomList: React.FC<CustomListProps> = ({
     try {
       setIsLoading(true);
       const response = await getCustomList(id);
+      const coverUrls: string[] = [];
+      const mangaItems: Manga[] = [];
+  
       for (let i = 0; i < response.length; i++) {
-        const cover = await response[i].getCovers();
-        setMangaCover((prevState) => [...prevState, cover[0].url]);
-        setMangaList((precState) => [...precState, response[i]]);
-        if (covers) {
-          covers([...mangaCover, cover[0].url]);
-        }
+        const fileName = await response[i].getCovers();
+        const cover = await getCover({id:response[i].id, fileName: fileName![0].fileName, size: 256});
+        coverUrls.push(cover);
+        mangaItems.push(response[i]);
+      }
+  
+      setMangaCover(coverUrls);
+      setMangaList(mangaItems);
+  
+      if (covers) {
+        covers(coverUrls);
       }
     } catch (error) {
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
+  
   useEffect(() => {
     setMangaList([]);
     setMangaList([]);

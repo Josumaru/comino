@@ -1,7 +1,7 @@
 import { View, Text, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Manga } from "mangadex-full-api";
-import { getRecentlyAdded } from "@/lib/mangadex/mangadex";
+import { getCover, getRecentlyAdded } from "@/lib/mangadex/mangadex";
 import { ScrollView, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 
@@ -13,8 +13,9 @@ const RecentlyAdded = () => {
   const fetchManga = async () => {
     const response = await getRecentlyAdded();
     for (let i = 0; i < response.length; i++) {
-      const cover = await response[i].getCovers();
-      setMangaCover((prevState) => [...prevState, cover[0].url]);
+      const fileName = await response[i].getCovers();
+      const cover = await getCover({id:response[i].id, fileName: fileName[0].fileName, size: 512});
+      setMangaCover((prevState) => [...prevState, cover]);
       setMangaList((precState) => [...precState, response[i]]);
     }
   };

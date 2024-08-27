@@ -23,6 +23,7 @@ const ReadPage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const { height } = Dimensions.get("window");
   const pageLayouts = useRef<number[]>([]).current;
+  const [loadedCount, setLoadedCount] = useState<number>(0);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollPosition = event.nativeEvent.contentOffset.y;
@@ -55,19 +56,69 @@ const ReadPage = () => {
       setChapters(chapter);
       const readingPages = await chapter.getReadablePages();
       setReadingPages(readingPages);
-    } catch (error) {
-    } finally {
-      setIsLoading(false);
-    }
+    } catch (error) {}
   };
+
   useEffect(() => {
+    setLoadedCount(1);
     fetchManga();
   }, [id]);
+
+  useEffect(() => {
+    const preloadImages = async () => {
+      const promises = readingPages.map((url) =>
+        Image.prefetch(url)
+          .then(() => setLoadedCount((prev) => prev + 1))
+          .catch(() => console.warn("Failed to load image", url))
+      );
+      await Promise.all(promises);
+      setIsLoading(false);
+    };
+
+    preloadImages();
+  }, [readingPages]);
+
   return (
     <SafeAreaView>
-      {isLoading ? (
-        <View>
-          <Text>Loading</Text>
+      {isLoading && loadedCount != 0 ? (
+        <View className="relative">
+          <BlurView
+            className="h-16 absolute w-full items-center justify-center p-2 z-20 border-b border-gray-400"
+            experimentalBlurMethod="dimezisBlurView"
+            intensity={75}
+          >
+            <View className="flex-1 w-full items-center justify-center">
+              <Text className="font-regular text-gray-500">
+                {chapters?.title}
+              </Text>
+              <Text className="font-regular text-xl">
+                {chapters?.chapter !== null ? `Ch. ${chapters?.chapter} ` : ""}
+                {chapters?.volume !== null ? `Vol. ${chapters?.volume}` : ""}
+              </Text>
+            </View>
+          </BlurView>
+          <View style={{ height }} className="flex items-center justify-center">
+            <View className="flex justify-center items-center flex-row">
+              <Text className="font-regular color-primary-500 text-7xl">
+                {Math.ceil(loadedCount / readingPages.length)}
+              </Text>
+              <Text className="font-regular text-7xl">%</Text>
+            </View>
+            <Text className="font-regular text-xl">Please wait</Text>
+          </View>
+          <BlurView
+            className="h-16 bottom-0 absolute w-full items-center justify-center p-2 z-20 border-t border-gray-400"
+            experimentalBlurMethod="dimezisBlurView"
+            intensity={75}
+          >
+            <View className="flex-1 w-full items-center justify-between flex-row">
+              <Text className="font-regular">Previous</Text>
+              <Text className="font-regular text-xl text-gray-500">
+                {`${currentPage}/${chapters?.pages}`}
+              </Text>
+              <Text className="font-regular">Next</Text>
+            </View>
+          </BlurView>
         </View>
       ) : (
         <View className="relative">

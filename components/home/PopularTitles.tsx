@@ -1,4 +1,4 @@
-import { getPopular } from "@/lib/mangadex/mangadex";
+import { getCover, getPopular } from "@/lib/mangadex/mangadex";
 import { Manga } from "mangadex-full-api";
 import {
   Image,
@@ -28,8 +28,9 @@ const PopularTitles = ({ onChange }: PopularTitlesProps) => {
     setIsLoading(true);
     const popularManga = await getPopular();
     for (let i = 0; i < popularManga.length; i++) {
-      const cover = await popularManga[i].getCovers();
-      setMangaCover((prevState) => [...prevState, cover[0].url]);
+      const fileName = await popularManga[i].getCovers();
+      const cover = await getCover({id:popularManga[i].id, fileName: fileName[0].fileName, size: 512});
+      setMangaCover((prevState) => [...prevState, cover]);
       setMangaList((precState) => [...precState, popularManga[i]]);
     }
     setIsLoading(false);

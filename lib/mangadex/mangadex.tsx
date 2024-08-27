@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Manga } from "mangadex-full-api";
+import { Manga, Cover } from "mangadex-full-api";
 
 const getPopular = async (): Promise<Manga[]> => {
   try {
@@ -22,7 +22,12 @@ const getPopular = async (): Promise<Manga[]> => {
 
 const getLatestUpdate = async (): Promise<Manga[]> => {
   try {
-    const attributes: { id: string; chapter: string; volume: string, updatedAt: Date }[] = [];
+    const attributes: {
+      id: string;
+      chapter: string;
+      volume: string;
+      updatedAt: Date;
+    }[] = [];
     const response = await axios.get(
       "https://api.mangadex.org/chapter?includes[]=scanlation_group&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&order[readableAt]=desc&limit=64"
     );
@@ -53,13 +58,15 @@ const getLatestUpdate = async (): Promise<Manga[]> => {
       attributes.forEach((attribute) => {
         if (manga.id === attribute.id) {
           let lastChapter = "";
-          const chapter = attribute.chapter
+          const chapter = attribute.chapter;
           const volume = attribute.volume;
-          if(chapter && volume) {
+          if (chapter && volume) {
             lastChapter = `Ch. ${attribute.chapter} Vol. ${attribute.volume}`;
-          } if(chapter && !volume) {
+          }
+          if (chapter && !volume) {
             lastChapter = `Ch. ${attribute.chapter}`;
-          } if(!chapter && volume) {
+          }
+          if (!chapter && volume) {
             lastChapter = `Vol. ${attribute.volume}`;
           }
           mangas[index].lastChapter = lastChapter;
@@ -76,12 +83,12 @@ const getLatestUpdate = async (): Promise<Manga[]> => {
 const getManga = async (id: string) => {
   try {
     return await Manga.getByQuery({
-      ids: [id]
-    })
+      ids: [id],
+    });
   } catch (error) {
     throw new Error(error as any as string);
   }
-}
+};
 
 const getRecentlyAdded = async () => {
   try {
@@ -97,25 +104,44 @@ const getRecentlyAdded = async () => {
   }
 };
 
+const getCover = async ({
+  id,
+  fileName,
+  size = 256,
+}: {
+  id: string;
+  fileName: string;
+  size?: 256 | 512;
+}): Promise<string> => {
+  const cover = `https://uploads.mangadex.org/covers/${id}/${fileName}.${size}.jpg`;
+  return cover;
+};
+
 const getCustomList = async (id: string) => {
-  const url = `https://api.mangadex.org/list/${id}?includes[]=user`
+  const url = `https://api.mangadex.org/list/${id}?includes[]=user`;
   try {
     const response = await axios.get(url);
-    const ids = response.data.data.relationships.map((id:any) => id.id);
+    const ids = response.data.data.relationships.map((id: any) => id.id);
     const manga = await Manga.search({
       ids: ids,
       limit: 15,
-      includes:["cover_art"],
+      includes: ["cover_art"],
       contentRating: ["safe", "erotica", "pornographic", "suggestive"],
       order: {
-        createdAt: "desc"
-      }
-    })
+        createdAt: "desc",
+      },
+    });
     return manga;
-
   } catch (error) {
     throw new Error(error as any as string);
   }
-}
+};
 
-export { getPopular, getLatestUpdate, getRecentlyAdded, getManga, getCustomList };
+export {
+  getPopular,
+  getLatestUpdate,
+  getRecentlyAdded,
+  getManga,
+  getCustomList,
+  getCover,
+};

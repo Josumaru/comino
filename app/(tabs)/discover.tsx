@@ -4,6 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ColoredTitle from "@/components/common/ColoredTitle";
 import MangaList from "@/components/discover/CustomList";
 import { ScrollView } from "moti";
+import BackgroundConstants from "@/constants/images/BackgroundConstants";
 
 const Discover = () => {
   const [cover, setCover] = useState<string[]>([]);
@@ -25,12 +26,11 @@ const Discover = () => {
   return (
     <View className="dark:bg-[#19191cdc]">
       <ImageBackground
-        src={cover[currentCover]}
+        src={cover[currentCover] ?? BackgroundConstants.authBackground.src}
         blurRadius={55}
         imageStyle={{ opacity: 0.5 }}
         >
         <SafeAreaView>
-        <Text className="text-xl text-red-500">{cover.length}</Text>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View className="mx-5">
               <ColoredTitle
