@@ -1,4 +1,5 @@
-import { View, Text, ImageBackground } from "react-native";
+import { View } from "react-native";
+import { ImageBackground } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ColoredTitle from "@/components/common/ColoredTitle";
@@ -26,7 +27,7 @@ const Discover = () => {
   return (
     <View className="dark:bg-[#19191cdc]">
       <ImageBackground
-        src={cover[currentCover] ?? BackgroundConstants.authBackground.src}
+        source={cover[currentCover] ?? BackgroundConstants.authBackground.src}
         blurRadius={55}
         imageStyle={{ opacity: 0.5 }}
         >

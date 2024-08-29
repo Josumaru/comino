@@ -1,4 +1,5 @@
-import { View, Text, Image } from "react-native";
+import { View, Text } from "react-native";
+import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { Manga } from "mangadex-full-api";
 import { getCover, getRecentlyAdded } from "@/lib/mangadex/mangadex";
@@ -36,7 +37,7 @@ const RecentlyAdded = () => {
             Array.from({ length: 5 }).map((_, index) => (
               <View key={index}>
                 <Image
-                  src={""}
+                  cachePolicy={"disk"}
                   className="h-48 w-32 rounded-lg bg-[#FFFFFF50]"
                 />
                 <Text>{"\n"}</Text>
@@ -56,7 +57,8 @@ const RecentlyAdded = () => {
                 activeOpacity={0.8}
               >
                 <Image
-                  src={mangaCover[index]}
+                  cachePolicy={"disk"}
+                  source={mangaCover[index]}
                   className="h-48 w-32 rounded-lg bg-[#FFFFFF50]"
                 />
                 <Text className="text-black dark:text-white overflow-clip line-clamp-2 font-regular">

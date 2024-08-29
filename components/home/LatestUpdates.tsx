@@ -1,4 +1,5 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import TextConstants from "@/constants/strings/TextConstants";
 import { Chapter, Manga } from "mangadex-full-api";
@@ -74,9 +75,10 @@ const LatestUpdate = () => {
                 >
                   <View className="flex-1 flex-row gap-2">
                     <Image
-                      source={{ uri: mangaCover[index] }}
-                      resizeMode="cover"
-                      className="rounded-lg z-20 w-20 h-32 bg-[#FFFFFF50]"
+                      cachePolicy={"disk"}
+                      source={mangaCover[index]}
+                      contentFit="cover"
+                      style={{width: 80, height: 128}}
                     />
                     <View className="flex-1">
                       <Text className="text-gray-400">{formatedTime}</Text>

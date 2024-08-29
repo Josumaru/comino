@@ -1,6 +1,6 @@
+import { Image } from "expo-image";
 import {
   View,
-  Image,
   Text,
   NativeSyntheticEvent,
   TextInputChangeEventData,
@@ -14,6 +14,7 @@ import { Manga } from "mangadex-full-api";
 import { ScrollView } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import { getCover } from "@/lib/mangadex/mangadex";
 
 interface SearchBarOverlayProps {
   handleClick: () => void;
@@ -40,8 +41,13 @@ const SearchBarOverlay: React.FC<SearchBarOverlayProps> = ({ handleClick }) => {
         title: value,
       });
       for (let i = 0; i < response.length; i++) {
-        const cover = await response[i].getCovers();
-        setMangaCover((prevState) => [...prevState, cover[0].url]);
+        const fileName = await response[i].getCovers();
+        const cover = await getCover({
+          id: response[i].id,
+          fileName: fileName[0].fileName,
+          size: 256,
+        });
+        setMangaCover((prevState) => [...prevState, cover]);
         setMangaList((precState) => [...precState, response[i]]);
       }
     } catch (error) {
@@ -102,9 +108,14 @@ const SearchBarOverlay: React.FC<SearchBarOverlayProps> = ({ handleClick }) => {
             {isLoading
               ? Array.from({ length: 5 }).map((array, index) => (
                   <View key={index}>
-                    <Image
-                      src={""}
-                      className="h-48 w-32 rounded-lg bg-[#FFFFFF50]"
+                    <View
+                      style={{
+                        width: 128,
+                        height: 192,
+                        marginBottom: 1,
+                        backgroundColor: "#FFFFFF50",
+                        borderRadius: 8,
+                      }}
                     />
                     <Text>{"\n"}</Text>
                   </View>
@@ -112,7 +123,7 @@ const SearchBarOverlay: React.FC<SearchBarOverlayProps> = ({ handleClick }) => {
               : mangaList.map((manga, index) => (
                   <TouchableOpacity
                     key={index}
-                    className="w-32"
+                    style={{ width: 128 }}
                     onPress={() =>
                       router.push({
                         pathname: "/detail/[id]",
@@ -122,8 +133,14 @@ const SearchBarOverlay: React.FC<SearchBarOverlayProps> = ({ handleClick }) => {
                     activeOpacity={0.8}
                   >
                     <Image
-                      src={mangaCover[index]}
-                      className="h-48 w-32 rounded-lg bg-[#FFFFFF50]"
+                      cachePolicy={"disk"}
+                      source={mangaCover[index]}
+                      style={{
+                        width: 128,
+                        height: 192,
+                        backgroundColor: "#FFFFFF50",
+                        borderRadius: 8,
+                      }}
                     />
                     <Text className="text-black dark:text-white overflow-clip line-clamp-2 font-regular">
                       {manga.localTitle}

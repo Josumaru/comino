@@ -1,7 +1,7 @@
 import { getCover, getPopular } from "@/lib/mangadex/mangadex";
 import { Manga } from "mangadex-full-api";
+import { Image } from "expo-image";
 import {
-  Image,
   NativeSyntheticEvent,
   Text,
   View,
@@ -86,7 +86,9 @@ const PopularTitles = ({ onChange }: PopularTitlesProps) => {
             activeOpacity={0.8}
           >
             <Image
-              src={mangaCover[index]}
+              cachePolicy={"disk"}
+              source={mangaCover[index]}
+              style={{width: 128, height: 192, backgroundColor: "#FFFFFF50", borderRadius: 8 }}
               className="rounded-lg z-20 w-32 h-48 bg-[#FFFFFF50]"
             />
             <View className="flex-1">

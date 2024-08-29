@@ -2,28 +2,40 @@ import {
   View,
   Text,
   ScrollView,
-  Image,
   Dimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from "react-native";
+import { Image, ImageLoadEventData } from "expo-image"
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { Chapter } from "mangadex-full-api";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
-import { ImageZoom, Zoomable } from "@likashefqet/react-native-image-zoom";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Zoomable } from "@likashefqet/react-native-image-zoom";
+import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 
 const ReadPage = () => {
   const { id } = useLocalSearchParams();
+  const { height } = Dimensions.get("window");
   const [readingPages, setReadingPages] = useState<string[]>([]);
   const [chapters, setChapters] = useState<Chapter>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const { height } = Dimensions.get("window");
-  const pageLayouts = useRef<number[]>([]).current;
   const [loadedCount, setLoadedCount] = useState<number>(0);
+  const pageLayouts = useRef<number[]>([]).current;
+  const [imageRatios, setImageRatios] = useState<number[]>([]);
+
+  const handleImageLoad = (
+    event: ImageLoadEventData,
+    index: number
+  ) => {
+    const { width, height } = event.source;
+    const newRatios = [...imageRatios];
+    newRatios[index] = width / height;
+    setImageRatios(newRatios);
+  };
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollPosition = event.nativeEvent.contentOffset.y;
@@ -50,37 +62,60 @@ const ReadPage = () => {
 
   const fetchManga = async () => {
     setIsLoading(true);
-    setReadingPages([]);
+    setLoadedCount(0);
+    setCurrentPage(1);
+    // setReadingPages([]);
     try {
       const chapter = await Chapter.get(id.toString());
       setChapters(chapter);
       const readingPages = await chapter.getReadablePages();
-      setReadingPages(readingPages);
-    } catch (error) {}
+      const updatedPages = readingPages.map((page) => {
+        const [_, path] = page.split("/data/");
+        return `https://uploads.mangadex.org/data/${path}`;
+      });
+      setReadingPages(updatedPages);
+       const promises = readingPages.map((url) => {
+        console.log(loadedCount);
+        console.log(readingPages.length);
+        Image.prefetch(url)
+          .catch(() => console.warn("Failed to load image", url))
+          .finally(() => setLoadedCount((prev) => prev + 1));
+      });
+      readingPages.forEach((e)=> console.log(e))
+      await Promise.all(promises);
+      setIsLoading(false);
+      setIsLoading(false);
+    } catch (error) {
+      setIsError(true);
+    }
   };
 
   useEffect(() => {
-    setLoadedCount(1);
     fetchManga();
   }, [id]);
 
   useEffect(() => {
     const preloadImages = async () => {
-      const promises = readingPages.map((url) =>
-        Image.prefetch(url)
-          .then(() => setLoadedCount((prev) => prev + 1))
-          .catch(() => console.warn("Failed to load image", url))
-      );
-      await Promise.all(promises);
+      // const promises = readingPages.map((url) => {
+      //   console.log(loadedCount);
+      //   console.log(readingPages.length);
+      //   Image.prefetch(url)
+      //     .catch(() => console.warn("Failed to load image", url))
+      //     .finally(() => setLoadedCount((prev) => prev + 1));
+      // });
+      // await Promise.all(promises);
       setIsLoading(false);
     };
+    // readingPages.map((a) => {
+    //   console.log(a);
+    // });
 
     preloadImages();
   }, [readingPages]);
 
   return (
     <SafeAreaView>
-      {isLoading && loadedCount != 0 ? (
+      {isLoading  || loadedCount <= readingPages.length - 1? (
         <View className="relative">
           <BlurView
             className="h-16 absolute w-full items-center justify-center p-2 z-20 border-b border-gray-400"
@@ -100,7 +135,7 @@ const ReadPage = () => {
           <View style={{ height }} className="flex items-center justify-center">
             <View className="flex justify-center items-center flex-row">
               <Text className="font-regular color-primary-500 text-7xl">
-                {Math.ceil(loadedCount / readingPages.length)}
+                {Math.ceil((loadedCount / readingPages.length) * 100)}
               </Text>
               <Text className="font-regular text-7xl">%</Text>
             </View>
@@ -144,27 +179,27 @@ const ReadPage = () => {
               onScroll={handleScroll}
               scrollEventThrottle={16}
             >
-              {readingPages.map((readingPages, index) => (
-                <GestureHandlerRootView key={index}>
-                  <Zoomable
-                    doubleTapScale={3}
-                    minPanPointers={1}
-                    isSingleTapEnabled
-                    isDoubleTapEnabled
-                  >
-                    <Image
-                      onLayout={(event) => onImageLayout(event, index)}
-                      resizeMode="cover"
-                      src={readingPages}
-                      className="w-full"
-                      style={{
-                        aspectRatio: 1,
-                        marginBottom: index == pageLayouts.length - 1 ? 112 : 0,
-                      }}
-                    />
-                  </Zoomable>
-                </GestureHandlerRootView>
-              ))}
+              {readingPages.map((imageUri, index) => {
+                const aspectRatio = imageRatios[index] || 1;
+                return (
+
+                      <Image
+                        key={index}
+                        onLayout={(event) => onImageLayout(event, index)}
+                        cachePolicy={"disk"}
+                        source={{ uri: imageUri }}
+                        contentFit="cover"
+                        transition={1000}
+                        autoplay= {false}
+                        style={{
+                          width: "100%",
+                          aspectRatio: aspectRatio,
+                          marginBottom: index == readingPages.length - 1 ? 64 : 0
+                        }}
+                        onLoad={(event) => handleImageLoad(event, index)}
+                      />
+                );
+              })}
             </ScrollView>
           </View>
           <BlurView
@@ -175,7 +210,7 @@ const ReadPage = () => {
             <View className="flex-1 w-full items-center justify-between flex-row">
               <Text className="font-regular">Previous</Text>
               <Text className="font-regular text-xl text-gray-500">
-                {`${currentPage}/${chapters?.pages}`}
+                {`${currentPage}/${readingPages.length}`}
               </Text>
               <Text className="font-regular">Next</Text>
             </View>

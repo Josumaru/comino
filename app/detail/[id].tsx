@@ -9,11 +9,11 @@ import { BlurView } from "expo-blur";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Author, Chapter, Manga } from "mangadex-full-api";
 import { useEffect, useState } from "react";
+import { Image } from "expo-image";
 import {
   ScrollView,
   View,
   Text,
-  Image,
   TouchableOpacity,
   Dimensions,
   ImageBackground,
@@ -90,6 +90,7 @@ const Detail = () => {
           </View>
           <View className="relative">
             <Image
+              cachePolicy={"disk"}
               className="rounded-lg bg-[#FFFFFF50]"
               style={{ width: 150, height: 230 }}
             />

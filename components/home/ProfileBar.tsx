@@ -1,4 +1,5 @@
-import { View, Text, Image } from 'react-native'
+import { View, Text } from 'react-native'
+import { Image } from 'expo-image'
 import React from 'react'
 import BackgroundConstants from '@/constants/images/BackgroundConstants'
 
@@ -9,7 +10,7 @@ const ProfileBar = () => {
         <Text className='font-regular text-xl'>{"Hii, Josumaru !👋"}</Text>
         <Text className='font-regular dark:color-white color-gray-500 text-sm'>{"Good Morning,  Kang Han's Sister just released"}</Text>
       </View>
-        <Image source={BackgroundConstants.onboardingBackgroundImage} className="w-12 h-12 rounded-full"/>
+        <Image cachePolicy={"disk"} source={BackgroundConstants.onboardingBackgroundImage} className="w-12 h-12 rounded-full"/>
     </View>
   )
 }

@@ -1,4 +1,5 @@
-import { View, Text, Image } from "react-native";
+import { View, Text } from "react-native";
+import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { Manga } from "mangadex-full-api";
 import { getCover, getCustomList } from "@/lib/mangadex/mangadex";
@@ -60,9 +61,8 @@ const CustomList: React.FC<CustomListProps> = ({
           {isLoading
             ? Array.from({ length: 5 }).map((_, index) => (
                 <View key={index}>
-                  <Image
-                    src={""}
-                    className="h-48 w-32 rounded-lg bg-[#FFFFFF50]"
+                  <View
+                    style={{ width: 128, height: 192, backgroundColor: "#FFFFFF50", borderRadius: 8 }}
                   />
                   <Text>{"\n"}</Text>
                 </View>
@@ -70,7 +70,7 @@ const CustomList: React.FC<CustomListProps> = ({
             : mangaList.map((manga, index) => (
                 <TouchableOpacity
                   key={index}
-                  className="w-32"
+                  style={{width: 128}}
                   onPress={() =>
                     router.push({
                       pathname: "/detail/[id]",
@@ -80,8 +80,9 @@ const CustomList: React.FC<CustomListProps> = ({
                   activeOpacity={0.8}
                 >
                   <Image
-                    src={mangaCover[index]}
-                    className="h-48 w-32 rounded-lg bg-[#FFFFFF50]"
+                    source={mangaCover[index]}
+                    cachePolicy={"disk"}
+                    style={{ width: 128, height: 192, backgroundColor: "#FFFFFF50", borderRadius: 8 }}
                   />
                   <Text className="text-black dark:text-white overflow-clip line-clamp-2 font-regular">
                     {manga.localTitle}
