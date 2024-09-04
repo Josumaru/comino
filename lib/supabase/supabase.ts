@@ -89,4 +89,14 @@ const signInWithPassword = async ({email, password}: SignInParams) => {
   return { data, error };
 };
 
-export { signUpWithPassword, signInWithPassword };
+const getCurrentUser = async () => {
+  const { data, error } = await supabase.auth.getUser();
+  return { data, error };
+}
+
+const signOut = async () => {
+  const { error } = await supabase.auth.signOut();
+  return { error };
+}
+
+export { signUpWithPassword, signInWithPassword, getCurrentUser, signOut };

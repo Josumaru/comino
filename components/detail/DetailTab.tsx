@@ -9,9 +9,8 @@ interface DetailTabProps {
 const DetailTab: React.FC<DetailTabProps> = ({manga}) => {
   return (
     <View className="flex flex-col pb-24">
-      <Text className="px-5 font-regular text-xl">Genres</Text>
       <ScrollView
-        className="flex-row "
+        className="flex-row pt-2"
         horizontal
         showsHorizontalScrollIndicator={false}
       >
@@ -29,8 +28,7 @@ const DetailTab: React.FC<DetailTabProps> = ({manga}) => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <Text className="font-regular text-xl px-5">Synopsis</Text>
-      <Text className="text-base font-regular color-gray-700 px-5">
+      <Text className="text-base font-regular color-gray-700 px-5 pt-5">
         {manga?.description.localString}
       </Text>
     </View>

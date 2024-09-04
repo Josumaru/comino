@@ -11,6 +11,7 @@ import SearchBarOverlay from "@/components/home/SearchBarOverlay";
 const Home = () => {
   const [cover, setCover] = useState<string>("");
   const [showSearchBar, setShowSearchBar] = useState<boolean>(false);
+  
   const onChange = (cover: string) => {
     setCover(cover);
   };
@@ -26,12 +27,12 @@ const Home = () => {
         <ScrollView
           className="dark:bg-[#19191cdc]"
           showsVerticalScrollIndicator={false}
-        >
+      >
           <ProfileBar />
           <SearchBar onClick={() => setShowSearchBar(true)} />
           <PopularTitles onChange={onChange} />
           <LatestUpdate />
-          <RecentlyAdded />
+          <RecentlyAdded bottom={true}/>
         </ScrollView>
       </ImageBackground>
     </SafeAreaView>

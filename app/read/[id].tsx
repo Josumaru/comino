@@ -5,15 +5,18 @@ import {
   Dimensions,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  TouchableOpacity,
 } from "react-native";
-import { Image, ImageLoadEventData } from "expo-image"
+import { Image, ImageLoadEventData } from "expo-image";
 import React, { useEffect, useRef, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Chapter } from "mangadex-full-api";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BlurView } from "expo-blur";
 import { Zoomable } from "@likashefqet/react-native-image-zoom";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
+import { useNavigation } from "expo-router";
+import IconConstants from "@/constants/images/IconConstants";
 
 const ReadPage = () => {
   const { id } = useLocalSearchParams();
@@ -26,16 +29,22 @@ const ReadPage = () => {
   const [loadedCount, setLoadedCount] = useState<number>(0);
   const pageLayouts = useRef<number[]>([]).current;
   const [imageRatios, setImageRatios] = useState<number[]>([]);
+  const router = useRouter();
 
-  const handleImageLoad = (
-    event: ImageLoadEventData,
-    index: number
-  ) => {
+  const handleImageLoad = (event: ImageLoadEventData, index: number) => {
     const { width, height } = event.source;
     const newRatios = [...imageRatios];
     newRatios[index] = width / height;
     setImageRatios(newRatios);
   };
+
+  useEffect(() => {
+    // navigation.addListener("beforeRemove", (e) => {
+    //   e.preventDefault();
+    //   // console.log("onback");
+    //   navigation.dispatch(e.data.action);
+    // });
+  }, []);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const scrollPosition = event.nativeEvent.contentOffset.y;
@@ -74,14 +83,11 @@ const ReadPage = () => {
         return `https://uploads.mangadex.org/data/${path}`;
       });
       setReadingPages(updatedPages);
-       const promises = readingPages.map((url) => {
-        console.log(loadedCount);
-        console.log(readingPages.length);
+      const promises = readingPages.map((url) => {
         Image.prefetch(url)
           .catch(() => console.warn("Failed to load image", url))
           .finally(() => setLoadedCount((prev) => prev + 1));
       });
-      readingPages.forEach((e)=> console.log(e))
       await Promise.all(promises);
       setIsLoading(false);
       setIsLoading(false);
@@ -115,7 +121,7 @@ const ReadPage = () => {
 
   return (
     <SafeAreaView>
-      {isLoading  || loadedCount <= readingPages.length - 1? (
+      {isLoading || loadedCount <= readingPages.length - 1 ? (
         <View className="relative">
           <BlurView
             className="h-16 absolute w-full items-center justify-center p-2 z-20 border-b border-gray-400"
@@ -123,12 +129,15 @@ const ReadPage = () => {
             intensity={75}
           >
             <View className="flex-1 w-full items-center justify-center">
+              <TouchableOpacity className="p-2 px-5 absolute left-0" onPress={() => router.back()}>
+                <Image source={IconConstants.back} style={{height: 24, width: 24}} tintColor={"black"}/>
+              </TouchableOpacity>
               <Text className="font-regular text-gray-500">
                 {chapters?.title}
               </Text>
               <Text className="font-regular text-xl">
-                {chapters?.chapter !== null ? `Ch. ${chapters?.chapter} ` : ""}
-                {chapters?.volume !== null ? `Vol. ${chapters?.volume}` : ""}
+                {chapters?.chapter !== null ? `Ch. ${chapters?.chapter ?? ""}` : ""}
+                {chapters?.volume !== null ? `Vol. ${chapters?.volume ?? ""}` : ""}
               </Text>
             </View>
           </BlurView>
@@ -147,11 +156,15 @@ const ReadPage = () => {
             intensity={75}
           >
             <View className="flex-1 w-full items-center justify-between flex-row">
-              <Text className="font-regular">Previous</Text>
+              <TouchableOpacity className="p-2 px-5">
+                <Image source={IconConstants.previous} style={{height: 24, width: 24}} tintColor={"black"}/>
+              </TouchableOpacity>
               <Text className="font-regular text-xl text-gray-500">
                 {`${currentPage}/${chapters?.pages}`}
               </Text>
-              <Text className="font-regular">Next</Text>
+              <TouchableOpacity className="p-2 px-5">
+                <Image source={IconConstants.next} style={{height: 24, width: 24}} tintColor={"black"}/>
+              </TouchableOpacity>
             </View>
           </BlurView>
         </View>
@@ -163,6 +176,9 @@ const ReadPage = () => {
             intensity={75}
           >
             <View className="flex-1 w-full items-center justify-center">
+              <TouchableOpacity className="p-2 px-5 absolute left-0" onPress={() => router.back()}>
+                  <Image source={IconConstants.back} style={{height: 24, width: 24}} tintColor={"black"}/>
+              </TouchableOpacity>
               <Text className="font-regular text-gray-500">
                 {chapters?.title}
               </Text>
@@ -177,27 +193,28 @@ const ReadPage = () => {
               style={{ height: height }}
               className="pt-16"
               onScroll={handleScroll}
+              alwaysBounceVertical={false}
+              showsVerticalScrollIndicator={false}
               scrollEventThrottle={16}
             >
               {readingPages.map((imageUri, index) => {
                 const aspectRatio = imageRatios[index] || 1;
                 return (
-
-                      <Image
-                        key={index}
-                        onLayout={(event) => onImageLayout(event, index)}
-                        cachePolicy={"disk"}
-                        source={{ uri: imageUri }}
-                        contentFit="cover"
-                        transition={1000}
-                        autoplay= {false}
-                        style={{
-                          width: "100%",
-                          aspectRatio: aspectRatio,
-                          marginBottom: index == readingPages.length - 1 ? 64 : 0
-                        }}
-                        onLoad={(event) => handleImageLoad(event, index)}
-                      />
+                  <Image
+                    key={index}
+                    onLayout={(event) => onImageLayout(event, index)}
+                    cachePolicy={"disk"}
+                    source={{ uri: imageUri }}
+                    contentFit="cover"
+                    transition={1000}
+                    autoplay={false}
+                    style={{
+                      width: "100%",
+                      aspectRatio: aspectRatio,
+                      marginBottom: index == readingPages.length - 1 ? 64 : 0,
+                    }}
+                    onLoad={(event) => handleImageLoad(event, index)}
+                  />
                 );
               })}
             </ScrollView>
@@ -208,11 +225,15 @@ const ReadPage = () => {
             intensity={75}
           >
             <View className="flex-1 w-full items-center justify-between flex-row">
-              <Text className="font-regular">Previous</Text>
+            <TouchableOpacity className="p-2 px-5">
+                <Image source={IconConstants.previous} style={{height: 24, width: 24}} tintColor={"black"}/>
+              </TouchableOpacity>
               <Text className="font-regular text-xl text-gray-500">
                 {`${currentPage}/${readingPages.length}`}
               </Text>
-              <Text className="font-regular">Next</Text>
+              <TouchableOpacity className="p-2 px-5">
+                <Image source={IconConstants.next} style={{height: 24, width: 24}} tintColor={"black"}/>
+              </TouchableOpacity>
             </View>
           </BlurView>
         </View>

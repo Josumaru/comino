@@ -14,11 +14,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { signUpWithPassword } from "@/lib/supabase/supabase";
 import TextConstants from "@/constants/strings/TextConstants";
+import { useAppDispatch } from "@/lib/redux/hooks";
 
 const SignUpComponent = () => {
   const [color, setColor] = useState<string>("white");
   const [isChecked, setChecked] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
   const theme = useColorScheme();
 
@@ -53,7 +55,8 @@ const SignUpComponent = () => {
       if(response.error) {
         Alert.alert("Something went wrong", response.error.message);
       } else {
-        router.replace("/(tabs)")
+        dispatch(setUser(response.data.user));
+        router.replace("/(tabs)/home")
       }
       setIsLoading(false);
     }

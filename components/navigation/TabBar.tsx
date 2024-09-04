@@ -5,19 +5,13 @@ import { BlurView } from "expo-blur";
 import IconConstants from "@/constants/images/IconConstants";
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
-
-  const isTabRoute = state.routes[state.index].name.includes("(tabs)");
-
-  if (!isTabRoute) {
-    return null;
-  }
   
   return (
-    <View className="mx-2">
+    <View>
       <BlurView
         experimentalBlurMethod="dimezisBlurView"
-        className="absolute bottom-2 w-full justify-between flex-row rounded-2xl p-4 overflow-hidden"
-        intensity={30}
+        className="absolute bottom-0 w-full justify-between flex-row rounded-t-[35px] p-4 overflow-hidden"
+        intensity={100}
       >
         {state.routes.map((route, index) => {
           const { options } = descriptors[route.key];
@@ -28,7 +22,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
               ? options.title
               : route.name;
 
-          if (!route.name.includes("(tabs)")) return null;
+          // if (!route.name.includes("(tabs)")) return null;
 
           const isFocused = state.index === index;
 
@@ -58,6 +52,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
               accessibilityLabel={options.tabBarAccessibilityLabel}
               testID={options.tabBarTestID}
               onPress={onPress}
+              className="flex-1"
               onLongPress={onLongPress}
               key={index}
             >

@@ -106,7 +106,7 @@ const SearchBarOverlay: React.FC<SearchBarOverlayProps> = ({ handleClick }) => {
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <View className="flex mt-5 px-5 gap-2 flex-row">
             {isLoading
-              ? Array.from({ length: 5 }).map((array, index) => (
+              ? Array.from({ length: 5 }).map((_, index) => (
                   <View key={index}>
                     <View
                       style={{

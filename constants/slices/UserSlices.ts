@@ -4,8 +4,8 @@
 
 const SET_USER = "SET_USER";
 
-const CounterConstants = {
+const UserSliceConstants = {
     SET_USER,
 };
 
-export default CounterConstants;
+export default UserSliceConstants;

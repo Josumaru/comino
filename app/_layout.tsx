@@ -1,34 +1,19 @@
 import { useFonts } from "expo-font";
-import { Tabs } from "expo-router";
+import { Stack, Tabs } from "expo-router";
+import { Text } from "moti";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
 import { Provider } from "react-redux";
 import { store } from "@/lib/redux/store";
-import React from "react";
-import IconsConstants from "@/constants/images/IconConstants";
-import TabConstants from "@/constants/strings/Tabs";
-import TabBar from "@/components/navigation/TabBar";
+import React, { useEffect } from "react";
 import "../global.css";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const tabs = [
-    {
-      name: TabConstants.home,
-      icon: IconsConstants.home,
-    },
-    {
-      name: TabConstants.discover,
-      icon: IconsConstants.discover,
-    },
-    {
-      name: TabConstants.profile,
-      icon: IconsConstants.profile,
-    },
-  ];
-  const [loaded] = useFonts({
+  const [loaded, error] = useFonts({
     "Lexend-Black": require("@/assets/fonts/Lexend-Black.ttf"),
     "Lexend-Bold": require("@/assets/fonts/Lexend-Bold.ttf"),
     "Lexend-ExtraBold": require("@/assets/fonts/Lexend-ExtraBold.ttf"),
@@ -42,7 +27,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      // SplashScreen.hideAsync();
     }
   }, [loaded]);
 
@@ -52,33 +37,22 @@ export default function RootLayout() {
 
   return (
     <Provider store={store}>
-      <Tabs tabBar={(props) => <TabBar {...props} />}>
-        {tabs.map((tab, index) => (
-          <Tabs.Screen
-            key={index}
-            name={`(tabs)/${tab.name.toLocaleLowerCase()}`}
-            options={{
-              title: tab.name,
+      <GestureHandlerRootView>
+        <BottomSheetModalProvider>
+          <Stack
+            screenOptions={{
               headerShown: false,
-              tabBarIcon: ({ focused }) => (
-                <tab.icon focused={focused} color={focused ? "red" : "blue"} />
-              ),
+              animation: "ios",
             }}
-          />
-        ))}
-        <Tabs.Screen
-          name={`detail/[id]`}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Tabs.Screen
-          name={`read/[id]`}
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Tabs>
+          >
+            <Stack.Screen name="index" options={{ title: "" }} />
+            <Stack.Screen name="(auth)" options={{ title: "" }} />
+            <Stack.Screen name="(tabs)" options={{ title: "" }} />
+            <Stack.Screen name="detail/[id]" options={{ title: "" }} />
+            <Stack.Screen name="read/[id]" options={{ title: "" }} />
+          </Stack>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
     </Provider>
   );
 }

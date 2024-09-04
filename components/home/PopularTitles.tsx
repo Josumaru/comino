@@ -11,6 +11,8 @@ import { useEffect, useRef, useState } from "react";
 import PagerView from "react-native-pager-view";
 import { useRouter } from "expo-router";
 import ColoredTitle from "../common/ColoredTitle";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { setCovers } from "@/lib/redux/features/cover/coverSlice";
 
 interface PopularTitlesProps {
   onChange: (cover: string) => void;
@@ -23,6 +25,7 @@ const PopularTitles = ({ onChange }: PopularTitlesProps) => {
   const [currentPage, setCurrentPage] = useState<number>(0);
   const router = useRouter();
   const pagerRef = useRef<PagerView>(null);
+  const dispatch = useAppDispatch();
 
   const fetchManga = async () => {
     setIsLoading(true);
@@ -35,6 +38,14 @@ const PopularTitles = ({ onChange }: PopularTitlesProps) => {
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (mangaCover) {
+      dispatch(setCovers(mangaCover));
+    } else {
+      dispatch(setCovers(null))
+    }
+  }, [mangaCover])
 
   useEffect(() => {
     setMangaList([]);

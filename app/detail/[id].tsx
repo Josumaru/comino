@@ -6,7 +6,7 @@ import { Pagination } from "@/components/detail/Pagination";
 import { getCover, getManga } from "@/lib/mangadex/mangadex";
 import { formatTime } from "@/lib/utils/timeFormater";
 import { BlurView } from "expo-blur";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Author, Chapter, Manga } from "mangadex-full-api";
 import { useEffect, useState } from "react";
 import { Image } from "expo-image";
@@ -17,8 +17,10 @@ import {
   TouchableOpacity,
   Dimensions,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { BackHandler } from "react-native";
 
 const Detail = () => {
   const { id } = useLocalSearchParams();
@@ -30,6 +32,7 @@ const Detail = () => {
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { height } = Dimensions.get("window");
+
 
   const fetchManga = async () => {
     try {
@@ -67,6 +70,7 @@ const Detail = () => {
     }
   };
 
+
   useEffect(() => {
     setChapters([]);
     fetchManga();
@@ -89,10 +93,13 @@ const Detail = () => {
             <View className="bg-[#FFFFFF50] min-h-12 flex justify-center items-center rounded-lg border border-[#FFFFFF80]" />
           </View>
           <View className="relative">
-            <Image
-              cachePolicy={"disk"}
-              className="rounded-lg bg-[#FFFFFF50]"
-              style={{ width: 150, height: 230 }}
+            <View
+              style={{
+                width: 150,
+                height: 230,
+                backgroundColor: "#FFFFFF50",
+                borderRadius: 8,
+              }}
             />
           </View>
         </View>
@@ -110,47 +117,25 @@ const Detail = () => {
             <View className="h-1 rounded-lg mt-5" />
           </TouchableOpacity>
         </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{ height: height - 300 }}
-        >
-          <View>
-            <View className="flex flex-col pb-24">
-              <View className="my-1 rounded-lg mx-5 w-14 h-4 bg-[#FFFFFF50]" />
-              <ScrollView
-                className="flex-row "
-                horizontal
-                showsHorizontalScrollIndicator={false}
-              >
-                {Array.from({ length: 10 }).map((_, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    className={`min-h-0 bg-[#FFFFFF50] border w-20 border-[#FFFFFF80] rounded-lg p-2 py-[13px] ${
-                      index === 0 ? "ml-5 mr-2" : "mr-2"
-                    } ${index === 9 ? "mr-5" : ""}`}
-                    activeOpacity={0.5}
-                  ></TouchableOpacity>
-                ))}
-              </ScrollView>
-              <View className="my-1 rounded-lg mx-5 w-32 h-4 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 flex-1 h-3 bg-[#FFFFFF50]" />
-              <View className="my-1 rounded-lg mx-5 w-1/3 h-3 bg-[#FFFFFF50]" />
+        <View>
+          <View className="flex flex-col pb-5">
+            <View className="flex-row pt-5">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <TouchableOpacity
+                  key={index}
+                  className={`min-h-0 bg-[#FFFFFF50] border w-20 border-[#FFFFFF80] rounded-lg p-2 py-[13px] flex-1 ${
+                    index === 0 ? "ml-5 mr-2" : "mr-2"
+                  } ${index === 3 ? "mr-5" : ""}`}
+                  activeOpacity={0.5}
+                ></TouchableOpacity>
+              ))}
             </View>
+            <View
+              className="my-1 rounded-lg mx-5 h-full bg-[#FFFFFF50]"
+              style={{ height: height - 368 }}
+            />
           </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   ) : (
@@ -174,7 +159,7 @@ const Detail = () => {
               style={{
                 backgroundColor: currentTab === 0 ? "gray" : "transparent",
               }}
-              className="h-1 rounded-lg mt-5"
+              className="h-1 rounded-xl mt-5"
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setCurrentTab(1)} className="flex-1">
@@ -185,7 +170,7 @@ const Detail = () => {
               style={{
                 backgroundColor: currentTab === 1 ? "gray" : "transparent",
               }}
-              className="h-1 rounded-lg mt-5"
+              className="h-1 rounded-xl mt-5"
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => setCurrentTab(2)} className="flex-1">
@@ -194,7 +179,7 @@ const Detail = () => {
               style={{
                 backgroundColor: currentTab === 2 ? "gray" : "transparent",
               }}
-              className="h-1 rounded-lg mt-5"
+              className="h-1 rounded-xl mt-5"
             />
           </TouchableOpacity>
         </View>

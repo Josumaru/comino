@@ -4,7 +4,6 @@ import { View, ImageBackground, useColorScheme } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { Redirect } from "expo-router";
 import ColorConstants from "@/constants/images/ColorConstants";
 
 const Onboarding = () => {
@@ -18,7 +17,6 @@ const Onboarding = () => {
         setColor(ColorConstants.lightGradientColor)
       }
     }, [theme])
-    return <Redirect href={"/home"}/>
   
     return (
       <View className="flex-1 bg-white dark:bg-[#060119]">

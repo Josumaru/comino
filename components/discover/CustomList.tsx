@@ -4,18 +4,16 @@ import React, { useEffect, useState } from "react";
 import { Manga } from "mangadex-full-api";
 import { getCover, getCustomList } from "@/lib/mangadex/mangadex";
 import { ScrollView, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 
 interface CustomListProps {
   id: string;
   bottom?: boolean;
-  covers?: (cover: string[]) => void;
 }
 
 const CustomList: React.FC<CustomListProps> = ({
   id,
   bottom = false,
-  covers,
 }) => {
   const [mangaList, setMangaList] = useState<Manga[]>([]);
   const [mangaCover, setMangaCover] = useState<string[]>([]);
@@ -28,27 +26,27 @@ const CustomList: React.FC<CustomListProps> = ({
       const response = await getCustomList(id);
       const coverUrls: string[] = [];
       const mangaItems: Manga[] = [];
-  
+
       for (let i = 0; i < response.length; i++) {
         const fileName = await response[i].getCovers();
-        const cover = await getCover({id:response[i].id, fileName: fileName![0].fileName, size: 256});
+        const cover = await getCover({
+          id: response[i].id,
+          fileName: fileName![0].fileName,
+          size: 256,
+        });
         coverUrls.push(cover);
         mangaItems.push(response[i]);
       }
-  
+
       setMangaCover(coverUrls);
       setMangaList(mangaItems);
-  
-      if (covers) {
-        covers(coverUrls);
-      }
     } catch (error) {
       console.error(error);
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     setMangaList([]);
     setMangaList([]);
@@ -62,7 +60,12 @@ const CustomList: React.FC<CustomListProps> = ({
             ? Array.from({ length: 5 }).map((_, index) => (
                 <View key={index}>
                   <View
-                    style={{ width: 128, height: 192, backgroundColor: "#FFFFFF50", borderRadius: 8 }}
+                    style={{
+                      width: 128,
+                      height: 192,
+                      backgroundColor: "#FFFFFF50",
+                      borderRadius: 8,
+                    }}
                   />
                   <Text>{"\n"}</Text>
                 </View>
@@ -70,9 +73,9 @@ const CustomList: React.FC<CustomListProps> = ({
             : mangaList.map((manga, index) => (
                 <TouchableOpacity
                   key={index}
-                  style={{width: 128}}
+                  style={{ width: 128 }}
                   onPress={() =>
-                    router.push({
+                    router.navigate({
                       pathname: "/detail/[id]",
                       params: { id: manga.id },
                     })
@@ -82,7 +85,12 @@ const CustomList: React.FC<CustomListProps> = ({
                   <Image
                     source={mangaCover[index]}
                     cachePolicy={"disk"}
-                    style={{ width: 128, height: 192, backgroundColor: "#FFFFFF50", borderRadius: 8 }}
+                    style={{
+                      width: 128,
+                      height: 192,
+                      backgroundColor: "#FFFFFF50",
+                      borderRadius: 8,
+                    }}
                   />
                   <Text className="text-black dark:text-white overflow-clip line-clamp-2 font-regular">
                     {manga.localTitle}

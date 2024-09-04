@@ -1,36 +1,31 @@
-import { View } from "react-native";
-import { ImageBackground } from "expo-image";
+import { View, ImageBackground } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ColoredTitle from "@/components/common/ColoredTitle";
 import MangaList from "@/components/discover/CustomList";
 import { ScrollView } from "moti";
 import BackgroundConstants from "@/constants/images/BackgroundConstants";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 const Discover = () => {
-  const [cover, setCover] = useState<string[]>([]);
+  const cover = useAppSelector((state) => state.cover.value);
   const [currentCover, setCurrentCover] = useState<number>(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const nextPage = currentCover + 1 < cover.length ? currentCover + 1 : 0;
+      const nextPage = currentCover + 1 < cover!.length ? currentCover + 1 : 0;
       setCurrentCover(nextPage);
     }, 4000);
     return () => clearInterval(interval);
-  }, [cover]);
-
-  const handleCover = (covers: string[]) => {
-    setCurrentCover(0)
-    setCover(covers);
-  };
+  }, [cover, currentCover]);
 
   return (
     <View className="dark:bg-[#19191cdc]">
       <ImageBackground
-        source={cover[currentCover] ?? BackgroundConstants.authBackground.src}
+        src={cover![currentCover] ?? BackgroundConstants.authBackground.src}
         blurRadius={55}
         imageStyle={{ opacity: 0.5 }}
-        >
+      >
         <SafeAreaView>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View className="mx-5">
@@ -48,10 +43,7 @@ const Discover = () => {
                 type="secondPrimary"
               />
             </View>
-            <MangaList
-              id={"805ba886-dd99-4aa4-b460-4bd7c7b71352"}
-              covers={handleCover}
-            />
+            <MangaList id={"805ba886-dd99-4aa4-b460-4bd7c7b71352"} />
             <View className="mx-5">
               <ColoredTitle
                 firstText="Featured"
