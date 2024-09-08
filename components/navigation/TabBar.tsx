@@ -10,7 +10,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
     <View>
       <BlurView
         experimentalBlurMethod="dimezisBlurView"
-        className="absolute bottom-0 w-full justify-between flex-row rounded-t-[35px] p-4 overflow-hidden"
+        className="absolute bottom-0 w-full justify-between flex-row arounded-t-[35px] p-4 overflow-hidden"
         intensity={100}
       >
         {state.routes.map((route, index) => {

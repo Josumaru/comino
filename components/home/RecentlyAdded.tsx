@@ -9,43 +9,63 @@ import ColoredTitle from "../common/ColoredTitle";
 
 interface RecentlyAddedProps {
   bottom?: boolean;
+  onRefresh: number;
 }
 
-const RecentlyAdded: React.FC<RecentlyAddedProps> = ({bottom = false}) => {
+const RecentlyAdded: React.FC<RecentlyAddedProps> = ({
+  bottom = false,
+  onRefresh,
+}) => {
   const [mangaList, setMangaList] = useState<Manga[]>([]);
   const [mangaCover, setMangaCover] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
   const fetchManga = async () => {
-    const response = await getRecentlyAdded();
-    for (let i = 0; i < response.length; i++) {
-      const fileName = await response[i].getCovers();
-      const cover = await getCover({
-        id: response[i].id,
-        fileName: fileName[0].fileName,
-        size: 512,
-      });
-      setMangaCover((prevState) => [...prevState, cover]);
-      setMangaList((precState) => [...precState, response[i]]);
+    setIsLoading(true);
+    try {
+      const response = await getRecentlyAdded();
+      for (let i = 0; i < response.length; i++) {
+        const fileName = await response[i].getCovers();
+        const cover = await getCover({
+          id: response[i].id,
+          fileName: fileName[0].fileName,
+          size: 256,
+        });
+        setMangaCover((prevState) => [...prevState, cover]);
+        setMangaList((precState) => [...precState, response[i]]);
+      }
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
     setMangaList([]);
     setMangaList([]);
     fetchManga();
-    setIsLoading(false);
-  }, []);
+  }, [onRefresh]);
   return (
-    <View style={{paddingBottom: bottom ? 100 : 0 }}>
+    <View style={{ paddingBottom: bottom ? 100 : 0 }}>
       <View className="mx-5">
-        <ColoredTitle firstText="Recently" secondText="Added" type="firstPrimary"/>
+        <ColoredTitle
+          firstText="Recently"
+          secondText="Added"
+          type="firstPrimary"
+        />
       </View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View className="flex mt-5 px-5 gap-2 flex-row">
           {isLoading
             ? Array.from({ length: 5 }).map((_, index) => (
                 <View key={index}>
-                  <View className="h-48 w-32 rounded-lg bg-[#FFFFFF50]" />
+                  <View
+                    style={{
+                      width: 128,
+                      height: 192,
+                      backgroundColor: "#FFFFFF50",
+                      borderRadius: 8,
+                    }}
+                  />
                   <Text>{"\n"}</Text>
                 </View>
               ))

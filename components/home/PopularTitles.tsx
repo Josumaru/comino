@@ -16,9 +16,10 @@ import { setCovers } from "@/lib/redux/features/cover/coverSlice";
 
 interface PopularTitlesProps {
   onChange: (cover: string) => void;
+  onRefresh: number;
 }
 
-const PopularTitles = ({ onChange }: PopularTitlesProps) => {
+const PopularTitles = ({ onChange, onRefresh }: PopularTitlesProps) => {
   const [mangaList, setMangaList] = useState<Manga[]>([]);
   const [mangaCover, setMangaCover] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -48,10 +49,13 @@ const PopularTitles = ({ onChange }: PopularTitlesProps) => {
   }, [mangaCover])
 
   useEffect(() => {
+    console.log('====================================');
+    console.log("das");
+    console.log('====================================');
     setMangaList([]);
     setMangaCover([]);
     fetchManga();
-  }, []);
+  }, [onRefresh]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,9 +77,50 @@ const PopularTitles = ({ onChange }: PopularTitlesProps) => {
   };
 
   return (
+    isLoading ? <View className="">
+    <View className="mx-5">
+      <ColoredTitle firstText={"Popular"} secondText="Titles" type="firstPrimary"/>
+    </View>
+    <PagerView
+      ref={pagerRef}
+      initialPage={0}
+      style={{ height: 200 }}
+      className="relative"
+      onPageSelected={onPageSelected}
+    >
+      {mangaList.map((manga, index) => (
+        <TouchableOpacity
+          key={index}
+          className="mx-5 flex flex-row gap-5"
+          onPress={() => {}}
+          activeOpacity={0.8}
+        >
+          <View
+            style={{width: 128, height: 192, backgroundColor: "#FFFFFF50", borderRadius: 8 }}
+          />
+          <View className="flex-1">
+            <View className="bg-[#FFFFFF50] opacity-50 rounded-lg mb-1 dark:bg-white text-wrap line-clamp-2 p-3 w-full h-4">
+            </View>
+            <View className="flex flex-row gap-2">
+              {manga.tags.slice(0, 3).map((tag, index) => (
+                <View
+                  key={index}
+                  className="bg-[#FFFFFF50] opacity-50 rounded-lg flex-1 items-center justify-center p-1"
+                >
+                  <View className="text-black dark:text-gray-500 font-regular opacity-100 line-clamp-1 text-wrap overflow-hidden text-xs p-2">
+                  </View>
+                </View>
+              ))}
+            </View>
+            <View className="bg-[#FFFFFF50] opacity-50 rounded-lg mt-1 mb-2 dark:bg-white text-wrap line-clamp-2 p-3 w-full flex-1"/>
+          </View>
+        </TouchableOpacity>
+      ))}
+    </PagerView>
+  </View>: 
     <View className="">
       <View className="mx-5">
-        <ColoredTitle firstText="Popular" secondText="Titles" type="firstPrimary"/>
+        <ColoredTitle firstText={"Popular"} secondText="Titles" type="firstPrimary"/>
       </View>
       <PagerView
         ref={pagerRef}

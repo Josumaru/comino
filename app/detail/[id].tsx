@@ -20,7 +20,8 @@ import {
   Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BackHandler } from "react-native";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { setChapter } from "@/lib/redux/features/chapter/chapterSlice";
 
 const Detail = () => {
   const { id } = useLocalSearchParams();
@@ -32,7 +33,7 @@ const Detail = () => {
   const [currentTab, setCurrentTab] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { height } = Dimensions.get("window");
-
+  const dispatch = useAppDispatch();
 
   const fetchManga = async () => {
     try {
@@ -47,6 +48,9 @@ const Detail = () => {
       const author = await Author.getByQuery({
         ids: [manga!.authors[0].id],
       });
+
+      dispatch(setChapter({author: author!.name, cover: cover}))
+      
       const statistic = await manga?.getStatistics();
       const chapters = await manga?.getFeed({
         limit: Infinity,

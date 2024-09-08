@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { User } from "@supabase/supabase-js";
 
 // Defined a type for the slice state
 interface UserState {

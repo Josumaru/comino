@@ -1,8 +1,16 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Author, Manga } from "mangadex-full-api";
 import { capitalizeFirstLetter } from "@/lib/utils/capitalizeFisrtLetter";
+import IconConstants from "@/constants/images/IconConstants";
+import {
+  addArchive,
+  getArchive,
+  getHistory,
+  removeArchive,
+} from "@/lib/supabase/supabase";
+import { useAppSelector } from "@/lib/redux/hooks";
 
 interface OverviewProps {
   author: Author;
@@ -17,6 +25,47 @@ const Overview: React.FC<OverviewProps> = ({
   cover,
   statistic,
 }) => {
+  const [saved, setIsSaved] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const user = useAppSelector((state) => state.user.value);
+
+  const handleAdd = async () => {
+    setIsLoading(true);
+    const data = await addArchive({
+      title: manga?.localTitle,
+      created_at: new Date(),
+      manga_id: manga?.id,
+      user_id: user?.id ?? "",
+      cover: cover,
+      author: author.name,
+      rating: statistic?.rating.average ?? 0,
+      synopsis: manga?.description.localString,
+    });
+    if (data) {
+      setIsSaved(true);
+    }
+    setIsLoading(false);
+  };
+  const handleRemove = async () => {
+    setIsLoading(true);
+    const data = await removeArchive(user?.id!, manga.id);
+    if (data) {
+      setIsSaved(false);
+    }
+    setIsLoading(false);
+  };
+  const fetchData = async () => {
+    setIsLoading(true);
+    const data = await getArchive(user!.id);
+    if (data.data) {
+      console.log(data.data);
+      setIsSaved(data.data.some((item) => item.manga_id === manga?.id));
+    }
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    fetchData();
+  }, [manga]);
   return (
     <View className="flex flex-row gap-2 w-full pt-5 pl-5 pr-5">
       <View className="flex-1" style={{ height: 230 }}>
@@ -32,9 +81,37 @@ const Overview: React.FC<OverviewProps> = ({
         <Text className="text-wrap overflow-hidden w-full line-clamp-3 flex-1 text-base font-regular color-gray-400">
           {author?.imageUrl}
         </Text>
-        <TouchableOpacity className="bg-primary-500 min-h-12 flex justify-center items-center rounded-lg border border-primary-600">
-          <Text className="font-semibold text-xl text-white">Read</Text>
-        </TouchableOpacity>
+        {!saved ? (
+          <TouchableOpacity
+            disabled={isLoading}
+            className="bg-primary-500 min-h-12 flex-row gap-2 justify-center items-center rounded-lg border border-primary-600"
+            onPress={handleAdd}
+          >
+            <Image
+              source={IconConstants.addArchive}
+              className="h-6 w-6"
+              tintColor={"white"}
+            />
+            <Text className="font-semibold text-xl text-white">
+              Add to List
+            </Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            disabled={isLoading}
+            className="bg-primary-500 min-h-12 flex-row gap-2 justify-center items-center rounded-lg border border-primary-600"
+            onPress={handleRemove}
+          >
+            <Image
+              source={IconConstants.removeArchive}
+              className="h-6 w-6"
+              tintColor={"white"}
+            />
+            <Text className="font-semibold text-xl text-white">
+              Remove from List
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
       <View className="relative">
         <Image

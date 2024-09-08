@@ -57,7 +57,7 @@ const SignInComponent = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: SignInParams) => {
+  const onSubmit = (data: UserParams) => {
     console.log(data);
     const fetchRequest = async () => {
       setIsLoading(true);
@@ -65,10 +65,10 @@ const SignInComponent = () => {
         email: data.email,
         password: data.password,
       });
-      if (response.error) {
-        Alert.alert("Something went wrong", response.error.message);
+      if ("error" in response) {
+        Alert.alert("Something went wrong", response.error);
       } else {
-        dispatch(setUser(response.data.user));
+        dispatch(setUser(response));
         router.replace("/(tabs)/home");
       }
       setIsLoading(false);

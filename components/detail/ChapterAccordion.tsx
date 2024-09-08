@@ -64,13 +64,5 @@ const ChapterAccordion: React.FC<AccordionProps> = ({
   });
 };
 
-const styles = StyleSheet.create({
-  hidden: {
-    height: 0,
-  },
-  contentContainer: {
-    overflow: "hidden",
-  },
-});
 
 export default ChapterAccordion;

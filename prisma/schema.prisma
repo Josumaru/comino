@@ -1,0 +1,13 @@
+datasource db {
+  provider          = "postgresql"
+  url               = env("EXPO_PUBLIC_DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String     @id
+  name     String
+}

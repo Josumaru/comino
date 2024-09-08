@@ -16,6 +16,10 @@ const TabLayout = () => {
       icon: IconsConstants.discover,
     },
     {
+      name: TabConstants.archive,
+      icon: IconsConstants.archive,
+    },
+    {
       name: TabConstants.profile,
       icon: IconsConstants.profile,
     },

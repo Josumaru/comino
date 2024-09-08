@@ -13,12 +13,14 @@ const Index = () => {
   const user = useAppSelector((state) => state.user.value);
   const dispatch = useAppDispatch();
   const fetchUser = async () => {
-    const { data, error } = await getCurrentUser();
-    if (data) {
-      dispatch(setUser(data.user));
-    } else if (error) {
 
+    const response = await getCurrentUser();
+    
+    if ("error" in response) {
       dispatch(setUser(null));
+    } else {
+      dispatch(setUser(response));
+
     }
   };
   useEffect(() => {

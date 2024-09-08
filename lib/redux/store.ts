@@ -3,9 +3,11 @@ import { configureStore } from "@reduxjs/toolkit";
 import mangaReducer from "@/lib/redux/features/manga/mangaSlice";
 import userReducer from "@/lib/redux/features/user/userSlice";
 import coverReducer from "@/lib/redux/features/cover/coverSlice";
+import chapterReducer from "@/lib/redux/features/chapter/chapterSlice";
 
 export const store = configureStore({
   reducer: {
+    chapter: chapterReducer,
     manga: mangaReducer,
     user: userReducer,
     cover: coverReducer,

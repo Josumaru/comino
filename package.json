@@ -15,10 +15,12 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@bang88/react-native-ultimate-listview": "^4.1.1",
     "@expo/vector-icons": "^14.0.2",
     "@gorhom/bottom-sheet": "^4",
     "@hookform/resolvers": "^3.9.0",
     "@likashefqet/react-native-image-zoom": "^4.1.0",
+    "@prisma/client": "5.19.1",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
@@ -54,6 +56,7 @@
     "react-hook-form": "^7.52.2",
     "react-native": "0.74.3",
     "react-native-chart-kit": "^6.12.0",
+    "react-native-djrefresh-library": "^0.3.1",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-get-random-values": "^1.11.0",
     "react-native-pager-view": "6.3.0",
@@ -61,6 +64,7 @@
     "react-native-safe-area-context": "4.10.5",
     "react-native-screens": "3.31.1",
     "react-native-simple-radio-button": "^2.7.4",
+    "react-native-ultimate-listview-ts": "^4.1.0",
     "react-native-web": "~0.19.10",
     "react-redux": "^9.1.2",
     "tailwindcss": "^3.4.7",
@@ -73,6 +77,7 @@
     "@types/react-test-renderer": "^18.0.7",
     "jest": "^29.2.1",
     "jest-expo": "~51.0.3",
+    "prisma": "5.19.1",
     "react-test-renderer": "18.2.0",
     "typescript": "~5.3.3"
   },

@@ -6,7 +6,13 @@ import Checkbox from "expo-checkbox";
 import React, { useEffect, useState } from "react";
 import { BlurView } from "expo-blur";
 import { StatusBar } from "expo-status-bar";
-import { View, ImageBackground, Text, useColorScheme, Alert }from "react-native";
+import {
+  View,
+  ImageBackground,
+  Text,
+  useColorScheme,
+  Alert,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Controller, useForm } from "react-hook-form";
@@ -15,6 +21,7 @@ import { z } from "zod";
 import { signUpWithPassword } from "@/lib/supabase/supabase";
 import TextConstants from "@/constants/strings/TextConstants";
 import { useAppDispatch } from "@/lib/redux/hooks";
+import { setUser } from "@/lib/redux/features/user/userSlice";
 
 const SignUpComponent = () => {
   const [color, setColor] = useState<string>("white");
@@ -48,20 +55,29 @@ const SignUpComponent = () => {
   });
 
   
-  const onSubmit = (data: SignInParams) => {
+  const onSubmit = (data: UserParams) => {
     const fetchRequest = async () => {
       setIsLoading(true);
-      const response = await signUpWithPassword({email: data.email, password: data.password});
-      if(response.error) {
-        Alert.alert("Something went wrong", response.error.message);
+      const response = await signUpWithPassword({
+        username: data.username,
+        email: data.email,
+        password: data.password,
+      });
+      if ("error" in response) {
+        Alert.alert("Something went wrong", response.error);
       } else {
-        dispatch(setUser(response.data.user));
-        router.replace("/(tabs)/home")
+        dispatch(setUser(response));
+        router.replace("/(tabs)/home");
       }
       setIsLoading(false);
+    };
+    try {
+      fetchRequest();
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Something went wrong", error as string);
     }
-    fetchRequest()    
-  }
+  };
   const handleClick = () => {
     router.replace("/sign-in");
   };
@@ -98,8 +114,18 @@ const SignUpComponent = () => {
                 fieldState: { error },
               }) => (
                 <>
-                  <Input title={TextConstants.username} image={IconConstants.profile} className="py-2" value={value} onChange={onChange} />
-                  {error && (<Text className="font-regular text-red-500">{error.message}</Text>)}
+                  <Input
+                    title={TextConstants.username}
+                    image={IconConstants.profile}
+                    className="py-2"
+                    value={value}
+                    onChange={onChange}
+                  />
+                  {error && (
+                    <Text className="font-regular text-red-500">
+                      {error.message}
+                    </Text>
+                  )}
                 </>
               )}
             />
@@ -112,8 +138,17 @@ const SignUpComponent = () => {
               }) => (
                 <>
                   <Input
-                    title={TextConstants.email} image={IconConstants.email} className="py-2" value={value} onChange={onChange} />
-                  {error && (<Text className="font-regular text-red-500">{error.message}</Text>)}
+                    title={TextConstants.email}
+                    image={IconConstants.email}
+                    className="py-2"
+                    value={value}
+                    onChange={onChange}
+                  />
+                  {error && (
+                    <Text className="font-regular text-red-500">
+                      {error.message}
+                    </Text>
+                  )}
                 </>
               )}
             />
@@ -125,8 +160,18 @@ const SignUpComponent = () => {
                 fieldState: { error },
               }) => (
                 <>
-                  <Input title={TextConstants.password} image={IconConstants.lock} className="py-2" value={value} onChange={onChange} />
-                  {error && (<Text className="font-regular text-red-500">{error.message}</Text>)}
+                  <Input
+                    title={TextConstants.password}
+                    image={IconConstants.lock}
+                    className="py-2"
+                    value={value}
+                    onChange={onChange}
+                  />
+                  {error && (
+                    <Text className="font-regular text-red-500">
+                      {error.message}
+                    </Text>
+                  )}
                 </>
               )}
             />
@@ -148,7 +193,7 @@ const SignUpComponent = () => {
               />
             </View>
             <Button
-              title={isLoading ? TextConstants.loading : TextConstants.signin}
+              title={isLoading ? TextConstants.loading : TextConstants.signup}
               className="py-4"
               loading={isLoading}
               onClick={handleSubmit(onSubmit)}
@@ -160,12 +205,28 @@ const SignUpComponent = () => {
               </Text>
               <View className="flex-1 h-[0.5px] rounded-xl bg-gray-500" />
             </View>
-            <BlurView intensity={50} tint="systemUltraThinMaterial" experimentalBlurMethod="dimezisBlurView" className="flex flex-row items-center justify-center rounded-xl overflow-hidden border-0.5 border-[#24253c] border-2" >
-              <Button title={TextConstants.google} image={IconConstants.google} className="border-0 flex-1 bg-transparent" />
+            <BlurView
+              intensity={50}
+              tint="systemUltraThinMaterial"
+              experimentalBlurMethod="dimezisBlurView"
+              className="flex flex-row items-center justify-center rounded-xl overflow-hidden border-0.5 border-[#24253c] border-2"
+            >
+              <Button
+                title={TextConstants.google}
+                image={IconConstants.google}
+                className="border-0 flex-1 bg-transparent"
+              />
             </BlurView>
             <View className="flex flex-row items-center justify-center gap-1 my-5">
-              <Text className="font-regular text-black dark:text-white">{TextConstants.dontHaveAccount}</Text>
-              <Button title={TextConstants.signin} className="bg-transparent border-0" textColor="#03d383" onClick={handleClick} />
+              <Text className="font-regular text-black dark:text-white">
+                {TextConstants.dontHaveAccount}
+              </Text>
+              <Button
+                title={TextConstants.signin}
+                className="bg-transparent border-0"
+                textColor="#03d383"
+                onClick={handleClick}
+              />
             </View>
           </View>
         </SafeAreaView>

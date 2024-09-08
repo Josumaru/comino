@@ -6,11 +6,12 @@ import MangaList from "@/components/discover/CustomList";
 import { ScrollView } from "moti";
 import BackgroundConstants from "@/constants/images/BackgroundConstants";
 import { useAppSelector } from "@/lib/redux/hooks";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const Discover = () => {
   const cover = useAppSelector((state) => state.cover.value);
   const [currentCover, setCurrentCover] = useState<number>(0);
-
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   useEffect(() => {
     const interval = setInterval(() => {
       const nextPage = currentCover + 1 < cover!.length ? currentCover + 1 : 0;
@@ -18,6 +19,12 @@ const Discover = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, [cover, currentCover]);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    // fetch data and update state
+    setIsRefreshing(false);
+  }
 
   return (
     <View className="dark:bg-[#19191cdc]">
@@ -27,7 +34,9 @@ const Discover = () => {
         imageStyle={{ opacity: 0.5 }}
       >
         <SafeAreaView>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} refreshControl={
+          <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} colors={["#03d383"]}/>
+          }>
             <View className="mx-5">
               <ColoredTitle
                 firstText="Self"

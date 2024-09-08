@@ -9,10 +9,25 @@ import ProfileHeader from "@/components/profile/ProfileHeader";
 import Settings from "@/components/profile/Settings";
 import BackgroundConstants from "@/constants/images/BackgroundConstants";
 import ProfileMenu from "@/components/profile/ProfileMenu";
+import { RefreshControl } from "react-native-gesture-handler";
+import LastRead from "@/components/profile/LastRead";
+import { getHistory } from "@/lib/supabase/supabase";
 
 const Profile = () => {
   const cover = useAppSelector((state) => state.cover.value);
   const [currentCover, setCurrentCover] = useState<number>(0);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
+
+  const user = useAppSelector((state) => state.user.value);
+  const [history, setHistory] = useState<HistoryParams[]>([]);
+
+  const fetchHistory = async () => {
+    const history = await getHistory(user?.id ?? "");
+    if (history.data) {
+      setHistory(history.data);
+    }
+  };
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,6 +37,16 @@ const Profile = () => {
     return () => clearInterval(interval);
   }, [cover, currentCover]);
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    fetchHistory();
+    setIsRefreshing(false);
+  }
+
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
   return (
     <SafeAreaView>
       <ImageBackground
@@ -30,11 +55,21 @@ const Profile = () => {
         className="h-full"
         imageStyle={{ opacity: 0.5 }}
       >
-        <MotiScrollView>
-          <ProfileHeader />
-          <Statistic />
+        <MotiScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+              colors={["#03d383"]}
+            />
+          }
+        >
+          <ProfileHeader history={history}/>
           {/* <ProfileMenu /> */}
-          <RecentlyAdded />
+
+          <Statistic history={history} onRefresh={isRefreshing} />
+          <LastRead onRefresh={isRefreshing} history={history} />
+          <RecentlyAdded onRefresh={0}/>
           <Settings />
         </MotiScrollView>
       </ImageBackground>

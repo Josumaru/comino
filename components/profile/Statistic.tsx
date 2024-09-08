@@ -3,26 +3,54 @@ import React from "react";
 import ColoredTitle from "../common/ColoredTitle";
 import { ContributionGraph } from "react-native-chart-kit";
 
-const Statistic = () => {
-  const screenWidth = Dimensions.get("window").width;
-  const commitsData = [
-    { date: "2024-08-02", count: 4 },
-    { date: "2024-08-03", count: 4 },
-    { date: "2024-08-04", count: 4 },
-    { date: "2024-08-05", count: 4 },
+interface StatisticProps {
+  history: HistoryParams[];
+  onRefresh: boolean;
+}
+
+const Statistic = ({ history, onRefresh }: StatisticProps) => {
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
   ];
+  const currentMonth = new Date().getMonth();
+  const lastFourMonths = [
+    monthNames[(currentMonth - 3 + 12) % 12],
+    monthNames[(currentMonth - 2 + 12) % 12],
+    monthNames[(currentMonth - 1 + 12) % 12],
+    monthNames[currentMonth],
+  ];
+  const screenWidth = Dimensions.get("window").width;
+  const commitsData = history.map((page) => ({
+    date: page.readed_at,
+    count: 1,
+  }));
+
   const handleToolTip: any = {};
   return (
-    <View className="relative" style={{height: 230}}>
+    <View className="relative" style={{ height: 230 }}>
       <View className="px-5 absolute">
-        <ColoredTitle firstText="Reading" secondText="Graph" type="firstPrimary" />
+        <ColoredTitle
+          firstText="Reading"
+          secondText="Graph"
+          type="firstPrimary"
+        />
       </View>
       <View className="px-10 flex-row justify-between pt-10">
-          <Text className="font-regular">Jun</Text>
-          <Text className="font-regular">Jul</Text>
-          <Text className="font-regular">Aug</Text>
-          <Text className="font-regular">Sep</Text>
-        </View>
+        {lastFourMonths.map((month) => (
+          <Text key={month} className="font-regular">{month}</Text>
+        ))}
+      </View>
       <View className="right-5 absolute bottom-0">
         <ContributionGraph
           tooltipDataAttrs={(value) => handleToolTip}

@@ -25,6 +25,9 @@ import moon from "@/assets/images/icons/moon.png";
 import apps from "@/assets/images/icons/apps.png";
 import archive from "@/assets/images/icons/archive.png";
 import history from "@/assets/images/icons/history.png";
+import addArchive from "@/assets/images/icons/add_archive.png";
+import removeArchive from "@/assets/images/icons/remove_archive.png";
+import star from "@/assets/images/icons/star.png";
 
 const IconConstants = {
   home,
@@ -50,6 +53,9 @@ const IconConstants = {
   apps,
   archive,
   history,
+  addArchive,
+  removeArchive,
+  star,
 };
 
 export default IconConstants;

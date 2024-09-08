@@ -153,7 +153,7 @@ const ChapterCardAccordian: React.FC<ChapterCardAccordianProps> = ({
                     {/* {chapter.chapter && (
                     <Text className="font-regular text-gray-500">{`Ch. ${chapter.chapter}`}</Text>
                   )} */}
-                    {chapter.translatedLanguage && chapter.title && (
+                    { (
                       <Text className="font-regular text-gray-500">{`${chapter.translatedLanguage.toUpperCase()} - ${chapter.title ?? "Untitled"}`}</Text>
                     )}
                   </View>
